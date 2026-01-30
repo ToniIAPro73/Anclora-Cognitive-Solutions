@@ -66,7 +66,7 @@ export default function DashboardPage() {
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
       <div>
-        <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">{t('dash.overview')}</h2>
+        <h2 className="text-3xl font-extrabold tracking-tight text-foreground">{t('dash.overview')}</h2>
         <p className="text-muted-foreground mt-1">
           {t('dash.summary')}
         </p>
@@ -74,9 +74,9 @@ export default function DashboardPage() {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat) => (
-          <Card key={stat.label} className="border-none shadow-sm dark:bg-zinc-900/50">
+          <Card key={stat.label} className="border-border shadow-sm bg-card hover:bg-accent/5 transition-all">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-400">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
                 {stat.label}
               </CardTitle>
               <div className={cn("p-2 rounded-xl transition-colors", stat.bgColor)}>
@@ -84,9 +84,9 @@ export default function DashboardPage() {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-slate-900 dark:text-white">{stat.value}</div>
+              <div className="text-3xl font-bold text-foreground">{stat.value}</div>
               <p className="text-xs text-muted-foreground mt-1 flex items-center">
-                <span className="text-emerald-500 font-medium mr-1">+0%</span>
+                <span className="text-primary font-medium mr-1">+0%</span>
                 desde el último mes
               </p>
             </CardContent>
@@ -95,20 +95,20 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <Card className="col-span-4 border-none shadow-sm dark:bg-zinc-900/50">
+        <Card className="col-span-4 border-border shadow-sm bg-card">
           <CardHeader>
             <CardTitle className="text-lg font-bold">{t('dash.recent_activity')}</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex flex-col gap-4 text-sm text-muted-foreground items-center justify-center py-20 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-3xl">
-              <div className="p-4 bg-slate-50 dark:bg-slate-900/50 rounded-full">
-                 <Bell className="h-6 w-6 text-slate-300 dark:text-slate-700" />
+            <div className="flex flex-col gap-4 text-sm text-muted-foreground items-center justify-center py-20 border-2 border-dashed border-muted rounded-3xl">
+              <div className="p-4 bg-muted rounded-full">
+                 <Bell className="h-6 w-6 text-muted-foreground/30" />
               </div>
               <p className="font-medium">{t('dash.no_activity') || 'No hay actividad reciente para mostrar.'}</p>
             </div>
           </CardContent>
         </Card>
-        <Card className="col-span-3 border-none shadow-sm dark:bg-zinc-900/50">
+        <Card className="col-span-3 border-border shadow-sm bg-card">
           <CardHeader>
             <CardTitle className="text-lg font-bold">{t('dash.shortcuts')}</CardTitle>
           </CardHeader>
@@ -146,12 +146,12 @@ function ShortcutItem({ icon: Icon, title, description, color }: any) {
   }
 
   return (
-    <div className="flex items-center gap-4 p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-2xl cursor-pointer border border-transparent hover:border-slate-100 dark:hover:border-slate-800 transition-all group">
+    <div className="flex items-center gap-4 p-4 hover:bg-accent rounded-2xl cursor-pointer border border-transparent hover:border-border transition-all group">
       <div className={cn("h-10 w-10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform", colorMap[color])}>
         <Icon className="h-5 w-5" />
       </div>
       <div>
-        <p className="font-bold text-sm text-slate-900 dark:text-slate-100">{title}</p>
+        <p className="font-bold text-sm text-foreground">{title}</p>
         <p className="text-xs text-muted-foreground">{description}</p>
       </div>
     </div>

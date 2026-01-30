@@ -9,10 +9,10 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
   const { isCollapsed } = useSidebar()
 
   return (
-    <div className="h-full relative flex">
+    <div className="h-full relative flex min-h-screen bg-background text-foreground transition-colors duration-300">
       <div 
         className={cn(
-          "hidden md:flex flex-col fixed inset-y-0 z-[80] bg-zinc-950 dark:bg-black transition-all duration-300 ease-in-out border-r border-slate-200 dark:border-slate-800",
+          "hidden md:flex flex-col fixed inset-y-0 z-[80] transition-all duration-300 ease-in-out border-r border-border",
           isCollapsed ? "w-20" : "w-72"
         )}
       >
@@ -25,7 +25,7 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
         )}
       >
         <Navbar />
-        <div className="p-8">
+        <div className="p-4 md:p-8">
           {children}
         </div>
       </main>

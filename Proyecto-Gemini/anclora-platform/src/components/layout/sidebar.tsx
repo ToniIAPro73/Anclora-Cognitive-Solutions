@@ -72,63 +72,68 @@ export function Sidebar() {
 
   return (
     <div className={cn(
-      "relative space-y-4 py-4 flex flex-col h-full bg-zinc-950 dark:bg-black text-white transition-all duration-300",
+      "relative space-y-4 py-6 flex flex-col h-full bg-slate-50 dark:bg-black border-r border-border/50 text-foreground transition-all duration-300 ease-in-out shadow-sm",
       isCollapsed ? "w-20" : "w-72"
     )}>
       {/* modern Toggle Button */}
       <Button
         onClick={toggle}
         className={cn(
-          "absolute -right-3 top-10 h-6 w-6 rounded-full p-0 flex items-center justify-center bg-teal-500 hover:bg-teal-600 border border-slate-200 dark:border-slate-800 shadow-lg z-[90] transition-all",
+          "absolute -right-3 top-10 h-7 w-7 rounded-full p-0 flex items-center justify-center bg-primary hover:bg-primary/90 border border-border shadow-xl z-[90] transition-all",
           isCollapsed ? "rotate-0" : "rotate-0"
         )}
       >
-        {isCollapsed ? <ChevronRight className="h-4 w-4 text-white" /> : <ChevronLeft className="h-4 w-4 text-white" />}
+        {isCollapsed ? <ChevronRight className="h-4 w-4 text-primary-foreground" /> : <ChevronLeft className="h-4 w-4 text-primary-foreground" />}
       </Button>
 
-      <div className="px-3 py-2 flex-1 overflow-y-auto overflow-x-hidden">
+      <div className="px-6 py-2 flex-1 overflow-y-auto overflow-x-hidden">
         <Link href="/dashboard" className={cn(
-          "flex items-center transition-all",
-          isCollapsed ? "justify-center" : "pl-3 mb-10"
+          "flex items-center transition-all mb-10",
+          isCollapsed ? "justify-center" : "pl-1"
         )}>
-          <div className="relative w-8 h-8 flex-shrink-0">
-            <div className="w-full h-full bg-teal-500 rounded-lg flex items-center justify-center font-bold text-xl shadow-[0_0_15px_rgba(20,184,166,0.3)] text-white">A</div>
+          <div className="relative w-10 h-10 flex-shrink-0">
+            <div className="w-full h-full bg-primary rounded-xl flex items-center justify-center font-bold text-2xl shadow-lg shadow-primary/20 text-primary-foreground">A</div>
           </div>
           {!isCollapsed && (
-            <h1 className="text-xl font-bold ml-4 tracking-tight">Anclora</h1>
+            <div className="flex flex-col ml-3 overflow-hidden">
+              <span className="text-xl font-bold tracking-tight text-foreground truncate">Anclora</span>
+              <span className="text-[10px] uppercase tracking-widest text-primary font-bold">Solutions</span>
+            </div>
           )}
         </Link>
-        <div className="space-y-1 mt-4">
+        <div className="space-y-2 mt-4">
           {routes.map((route) => (
             <Link
               key={route.href}
               href={route.href}
               className={cn(
-                'text-sm group flex p-3 w-full justify-start font-medium cursor-pointer hover:text-white hover:bg-white/10 rounded-lg transition-colors',
-                pathname === route.href ? 'text-white bg-white/10' : 'text-zinc-400',
-                isCollapsed ? "justify-center" : "justify-start"
+                'text-sm group flex p-3 w-full justify-start font-semibold cursor-pointer rounded-xl transition-all duration-200',
+                pathname === route.href 
+                  ? 'bg-primary/10 text-primary shadow-[inset_0_0_0_1px_rgba(20,184,166,0.1)]' 
+                  : 'text-muted-foreground hover:bg-muted/80 hover:text-foreground',
+                isCollapsed ? "justify-center p-3" : "justify-start"
               )}
               title={isCollapsed ? route.label : ''}
             >
               <div className="flex items-center">
-                <route.icon className={cn('h-5 w-5', !isCollapsed && 'mr-3', route.color)} />
+                <route.icon className={cn('h-5 w-5 transition-transform group-hover:scale-110 duration-200', !isCollapsed && 'mr-4', route.color)} />
                 {!isCollapsed && <span>{route.label}</span>}
               </div>
             </Link>
           ))}
         </div>
       </div>
-      <div className="px-3 py-2 border-t border-slate-800">
+      <div className="px-6 py-4 border-t border-border/50">
         <button
           onClick={() => signOut()}
           className={cn(
-            "text-sm group flex p-3 w-full font-medium cursor-pointer hover:text-white hover:bg-white/10 rounded-lg transition text-zinc-400",
+            "text-sm group flex p-4 w-full font-semibold cursor-pointer rounded-xl transition-all text-muted-foreground hover:bg-destructive/5 hover:text-destructive",
             isCollapsed ? "justify-center" : "justify-start"
           )}
           title={isCollapsed ? t('nav.logout') : ''}
         >
           <div className="flex items-center">
-            <LogOut className={cn("h-5 w-5 text-red-400", !isCollapsed && "mr-3")} />
+            <LogOut className={cn("h-5 w-5", !isCollapsed && "mr-4")} />
             {!isCollapsed && <span>{t('nav.logout')}</span>}
           </div>
         </button>
