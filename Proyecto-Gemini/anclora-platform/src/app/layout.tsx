@@ -17,17 +17,29 @@ export const metadata: Metadata = {
   description: "Plataforma integral de gestión de proyectos, clientes y presupuestos para Anclora Cognitive Solutions.",
 };
 
+import { ThemeProvider } from "@/components/layout/theme-provider";
+import { LanguageProvider } from "@/components/layout/language-provider";
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="es" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <LanguageProvider>
+            {children}
+          </LanguageProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

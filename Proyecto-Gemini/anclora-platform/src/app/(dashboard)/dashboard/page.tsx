@@ -1,76 +1,93 @@
+'use client'
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Briefcase, Users, FileText, CheckCircle } from "lucide-react"
-import { createClient } from "@/lib/supabase/server"
+import { Briefcase, Users, FileText, CheckCircle, Bell } from "lucide-react"
+import { useLanguage } from "@/components/layout/language-provider"
+import { useEffect, useState } from "react"
+import { createClient } from "@/lib/supabase/client"
+import { cn } from "@/lib/utils"
 
-export default async function DashboardPage() {
-  const supabase = await createClient()
+export default function DashboardPage() {
+  const { t } = useLanguage()
+  const [statsData, setStatsData] = useState({ clients: 0, projects: 0, quotes: 0 })
+  const supabase = createClient()
 
-  // Fetch some basic stats for the dashboard
-  const [
-    { count: clientsCount },
-    { count: projectsCount },
-    { count: quotesCount },
-  ] = await Promise.all([
-    supabase.from('clients').select('*', { count: 'exact', head: true }),
-    supabase.from('projects').select('*', { count: 'exact', head: true }),
-    supabase.from('quotes').select('*', { count: 'exact', head: true }),
-  ])
+  useEffect(() => {
+    async function fetchStats() {
+      const [
+        { count: clientsCount },
+        { count: projectsCount },
+        { count: quotesCount },
+      ] = await Promise.all([
+        supabase.from('clients').select('*', { count: 'exact', head: true }),
+        supabase.from('projects').select('*', { count: 'exact', head: true }),
+        supabase.from('quotes').select('*', { count: 'exact', head: true }),
+      ])
+      setStatsData({
+        clients: clientsCount || 0,
+        projects: projectsCount || 0,
+        quotes: quotesCount || 0
+      })
+    }
+    fetchStats()
+  }, [])
 
   const stats = [
     {
-      label: "Clientes Totales",
-      value: clientsCount || 0,
+      label: t('dash.total_clients'),
+      value: statsData.clients,
       icon: Users,
-      color: "text-blue-600",
-      bgColor: "bg-blue-100",
+      color: "text-blue-600 dark:text-blue-400",
+      bgColor: "bg-blue-100/50 dark:bg-blue-900/20",
     },
     {
-      label: "Proyectos Activos",
-      value: projectsCount || 0,
+      label: t('dash.active_projects'),
+      value: statsData.projects,
       icon: Briefcase,
-      color: "text-teal-600",
-      bgColor: "bg-teal-100",
+      color: "text-teal-600 dark:text-teal-400",
+      bgColor: "bg-teal-100/50 dark:bg-teal-900/20",
     },
     {
-      label: "Presupuestos",
-      value: quotesCount || 0,
+      label: t('dash.generate_quote'),
+      value: statsData.quotes,
       icon: FileText,
-      color: "text-amber-600",
-      bgColor: "bg-amber-100",
+      color: "text-amber-600 dark:text-amber-400",
+      bgColor: "bg-amber-100/50 dark:bg-amber-900/20",
     },
     {
       label: "Completados",
-      value: 0, // Mock for now
+      value: 0,
       icon: CheckCircle,
-      color: "text-emerald-600",
-      bgColor: "bg-emerald-100",
+      color: "text-emerald-600 dark:text-emerald-400",
+      bgColor: "bg-emerald-100/50 dark:bg-emerald-900/20",
     },
   ]
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 animate-in fade-in duration-500">
       <div>
-        <h2 className="text-3xl font-bold tracking-tight">Dashboard Overview</h2>
-        <p className="text-muted-foreground">
-          Bienvenido de nuevo. Aquí tienes un resumen de la actividad actual.
+        <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">{t('dash.overview')}</h2>
+        <p className="text-muted-foreground mt-1">
+          {t('dash.summary')}
         </p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat) => (
-          <Card key={stat.label}>
+          <Card key={stat.label} className="border-none shadow-sm dark:bg-zinc-900/50">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
+              <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-400">
                 {stat.label}
               </CardTitle>
-              <div className={`p-2 rounded-lg ${stat.bgColor}`}>
-                <stat.icon className={`h-4 w-4 ${stat.color}`} />
+              <div className={cn("p-2 rounded-xl transition-colors", stat.bgColor)}>
+                <stat.icon className={cn("h-4 w-4", stat.color)} />
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stat.value}</div>
-              <p className="text-xs text-muted-foreground">
-                +0 desde el último mes
+              <div className="text-3xl font-bold text-slate-900 dark:text-white">{stat.value}</div>
+              <p className="text-xs text-muted-foreground mt-1 flex items-center">
+                <span className="text-emerald-500 font-medium mr-1">+0%</span>
+                desde el último mes
               </p>
             </CardContent>
           </Card>
@@ -78,50 +95,64 @@ export default async function DashboardPage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <Card className="col-span-4">
+        <Card className="col-span-4 border-none shadow-sm dark:bg-zinc-900/50">
           <CardHeader>
-            <CardTitle>Actividad Reciente</CardTitle>
+            <CardTitle className="text-lg font-bold">{t('dash.recent_activity')}</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex flex-col gap-4 text-sm text-muted-foreground items-center justify-center py-12 border-2 border-dashed rounded-xl">
-              <p>No hay actividad reciente para mostrar.</p>
+            <div className="flex flex-col gap-4 text-sm text-muted-foreground items-center justify-center py-20 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-3xl">
+              <div className="p-4 bg-slate-50 dark:bg-slate-900/50 rounded-full">
+                 <Bell className="h-6 w-6 text-slate-300 dark:text-slate-700" />
+              </div>
+              <p className="font-medium">{t('dash.no_activity') || 'No hay actividad reciente para mostrar.'}</p>
             </div>
           </CardContent>
         </Card>
-        <Card className="col-span-3">
+        <Card className="col-span-3 border-none shadow-sm dark:bg-zinc-900/50">
           <CardHeader>
-            <CardTitle>Accesos Directos</CardTitle>
+            <CardTitle className="text-lg font-bold">{t('dash.shortcuts')}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-             <div className="flex items-center gap-4 p-3 hover:bg-slate-50 rounded-lg cursor-pointer border">
-                <div className="h-8 w-8 bg-teal-100 rounded-lg flex items-center justify-center">
-                  <Briefcase className="h-4 w-4 text-teal-600" />
-                </div>
-                <div>
-                  <p className="font-semibold text-sm">Nuevo Proyecto</p>
-                  <p className="text-xs text-muted-foreground">Crea una ficha de proyecto</p>
-                </div>
-             </div>
-             <div className="flex items-center gap-4 p-3 hover:bg-slate-50 rounded-lg cursor-pointer border">
-                <div className="h-8 w-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <Users className="h-4 w-4 text-blue-600" />
-                </div>
-                <div>
-                  <p className="font-semibold text-sm">Añadir Cliente</p>
-                  <p className="text-xs text-muted-foreground">Registra un nuevo contacto</p>
-                </div>
-             </div>
-             <div className="flex items-center gap-4 p-3 hover:bg-slate-50 rounded-lg cursor-pointer border">
-                <div className="h-8 w-8 bg-amber-100 rounded-lg flex items-center justify-center">
-                  <FileText className="h-4 w-4 text-amber-600" />
-                </div>
-                <div>
-                  <p className="font-semibold text-sm">Generar Presupuesto</p>
-                  <p className="text-xs text-muted-foreground">Usa la IA para cotizar</p>
-                </div>
-             </div>
+             <ShortcutItem 
+               icon={Briefcase} 
+               title={t('dash.new_project')} 
+               description="Crea una ficha de proyecto"
+               color="teal"
+             />
+             <ShortcutItem 
+               icon={Users} 
+               title={t('dash.add_client')} 
+               description="Registra un nuevo contacto"
+               color="blue"
+             />
+             <ShortcutItem 
+               icon={FileText} 
+               title={t('dash.generate_quote')} 
+               description="Usa la IA para cotizar"
+               color="amber"
+             />
           </CardContent>
         </Card>
+      </div>
+    </div>
+  )
+}
+
+function ShortcutItem({ icon: Icon, title, description, color }: any) {
+  const colorMap: any = {
+    teal: "text-teal-600 bg-teal-100/50 dark:text-teal-400 dark:bg-teal-900/20",
+    blue: "text-blue-600 bg-blue-100/50 dark:text-blue-400 dark:bg-blue-900/20",
+    amber: "text-amber-600 bg-amber-100/50 dark:text-amber-400 dark:bg-amber-900/20",
+  }
+
+  return (
+    <div className="flex items-center gap-4 p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-2xl cursor-pointer border border-transparent hover:border-slate-100 dark:hover:border-slate-800 transition-all group">
+      <div className={cn("h-10 w-10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform", colorMap[color])}>
+        <Icon className="h-5 w-5" />
+      </div>
+      <div>
+        <p className="font-bold text-sm text-slate-900 dark:text-slate-100">{title}</p>
+        <p className="text-xs text-muted-foreground">{description}</p>
       </div>
     </div>
   )
