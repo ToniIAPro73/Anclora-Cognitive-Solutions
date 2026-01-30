@@ -1,0 +1,1421 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anclora Cognitive Solutions - Setup Supabase</title>
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --accent: #38bdf8;
+            --accent-hover: #0ea5e9;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid var(--bg-tertiary);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--accent);
+        }
+
+        .tagline {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid var(--bg-tertiary);
+        }
+
+        .card h2 {
+            color: var(--accent);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card h3 {
+            color: var(--text-primary);
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        .code-block {
+            background: var(--bg-primary);
+            border: 1px solid var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 1rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            position: relative;
+        }
+
+        .code-block pre {
+            margin: 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: var(--accent);
+            color: var(--bg-primary);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: background 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        .step {
+            background: var(--bg-tertiary);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .step-number {
+            display: inline-block;
+            background: var(--accent);
+            color: var(--bg-primary);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        .command {
+            background: var(--bg-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-family: monospace;
+            border-left: 3px solid var(--accent);
+            margin: 0.5rem 0;
+        }
+
+        .note {
+            background: rgba(56, 189, 248, 0.1);
+            border-left: 4px solid var(--accent);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+
+        .warning {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid var(--warning);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+
+        .success {
+            background: rgba(34, 197, 94, 0.1);
+            border-left: 4px solid var(--success);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+
+        .file-tree {
+            font-family: monospace;
+            line-height: 1.8;
+            color: var(--text-secondary);
+        }
+
+        .file-tree .folder { color: var(--accent); }
+        .file-tree .file { color: var(--text-secondary); }
+
+        ul, ol {
+            margin-left: 1.5rem;
+            margin-top: 0.5rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .tab-container {
+            margin: 1rem 0;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            border-bottom: 2px solid var(--bg-tertiary);
+            margin-bottom: 1rem;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1rem;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .tab:hover {
+            color: var(--text-primary);
+        }
+
+        .tab.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            body {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Anclora Cognitive Solutions</h1>
+            <p class="tagline">Guía Completa de Setup con Supabase - Stack Open Source</p>
+        </header>
+
+        <!-- Paso 1: Proyecto Supabase -->
+        <div class="card">
+            <h2>📦 Paso 1: Crear Proyecto Supabase</h2>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                <strong>Crear cuenta en Supabase</strong>
+                <p>Ve a <a href="https://supabase.com" target="_blank">supabase.com</a> y crea una cuenta gratuita</p>
+            </div>
+
+            <div class="step">
+                <span class="step-number">2</span>
+                <strong>Crear nuevo proyecto</strong>
+                <ul>
+                    <li>Nombre: <code>anclora-cognitive</code></li>
+                    <li>Database Password: Guarda esta contraseña de forma segura</li>
+                    <li>Región: Frankfurt (EU Central) - más cercana a España</li>
+                </ul>
+            </div>
+
+            <div class="step">
+                <span class="step-number">3</span>
+                <strong>Obtener credenciales</strong>
+                <p>Ve a Settings → API y copia:</p>
+                <ul>
+                    <li>Project URL: <code>https://xxxxx.supabase.co</code></li>
+                    <li>anon/public key: <code>eyJhbG...</code></li>
+                    <li>service_role key: <code>eyJhbG...</code> (¡NO expongas esta!)</li>
+                </ul>
+            </div>
+
+            <div class="warning">
+                <strong>⚠️ Importante:</strong> Nunca compartas tu <code>service_role</code> key públicamente. Solo úsala en servidor.
+            </div>
+        </div>
+
+        <!-- Paso 2: Schema SQL -->
+        <div class="card">
+            <h2>🗄️ Paso 2: Crear Schema de Base de Datos</h2>
+            
+            <p>Ve a SQL Editor en tu dashboard de Supabase y ejecuta este script:</p>
+
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                <pre>-- =============================================
+-- ANCLORA COGNITIVE SOLUTIONS DATABASE SCHEMA
+-- =============================================
+
+-- Extensiones necesarias
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+-- =============================================
+-- TABLA: clients (Clientes)
+-- =============================================
+CREATE TABLE IF NOT EXISTS clients (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    company_name TEXT NOT NULL,
+    contact_person TEXT,
+    email TEXT UNIQUE NOT NULL,
+    phone TEXT,
+    address TEXT,
+    nif_cif TEXT,
+    language TEXT DEFAULT 'es' CHECK (language IN ('es', 'en', 'ca')),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- =============================================
+-- TABLA: projects (Proyectos)
+-- =============================================
+CREATE TABLE IF NOT EXISTS projects (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    client_id UUID REFERENCES clients(id) ON DELETE CASCADE,
+    name TEXT NOT NULL,
+    description TEXT,
+    budget DECIMAL(10,2),
+    spent DECIMAL(10,2) DEFAULT 0,
+    status TEXT DEFAULT 'backlog' CHECK (
+        status IN ('backlog', 'propuesta', 'aprobado', 'en_progreso', 'testing', 'completado', 'cancelado')
+    ),
+    priority TEXT DEFAULT 'medium' CHECK (
+        priority IN ('low', 'medium', 'high', 'urgent')
+    ),
+    stage_order INT DEFAULT 0,
+    due_date DATE,
+    alert_config JSONB DEFAULT '{}',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- =============================================
+-- TABLA: quotes (Presupuestos)
+-- =============================================
+CREATE TABLE IF NOT EXISTS quotes (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    project_id UUID REFERENCES projects(id) ON DELETE CASCADE,
+    version INT DEFAULT 1,
+    language TEXT DEFAULT 'es' CHECK (language IN ('es', 'en', 'ca')),
+    tone TEXT DEFAULT 'profesional' CHECK (
+        tone IN ('técnico', 'sencillo', 'formal', 'profesional', 'consultivo', 'casual')
+    ),
+    services JSONB NOT NULL DEFAULT '[]',
+    subtotal DECIMAL(10,2) NOT NULL,
+    tax_rate DECIMAL(5,2) DEFAULT 21.00,
+    tax_amount DECIMAL(10,2) NOT NULL,
+    total DECIMAL(10,2) NOT NULL,
+    status TEXT DEFAULT 'draft' CHECK (
+        status IN ('draft', 'sent', 'viewed', 'accepted', 'rejected')
+    ),
+    pdf_url TEXT,
+    valid_until DATE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- =============================================
+-- TABLA: invoices (Facturas)
+-- =============================================
+CREATE TABLE IF NOT EXISTS invoices (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    quote_id UUID REFERENCES quotes(id) ON DELETE SET NULL,
+    project_id UUID REFERENCES projects(id) ON DELETE CASCADE,
+    invoice_number TEXT UNIQUE NOT NULL,
+    issue_date DATE DEFAULT CURRENT_DATE,
+    due_date DATE NOT NULL,
+    payment_status TEXT DEFAULT 'pending' CHECK (
+        payment_status IN ('pending', 'partial', 'paid', 'overdue', 'cancelled')
+    ),
+    payment_date DATE,
+    payment_terms TEXT DEFAULT '30 días',
+    subtotal DECIMAL(10,2) NOT NULL,
+    tax_rate DECIMAL(5,2) DEFAULT 21.00,
+    tax_amount DECIMAL(10,2) NOT NULL,
+    total DECIMAL(10,2) NOT NULL,
+    pdf_url TEXT,
+    notes TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- =============================================
+-- TABLA: tasks (Tareas Kanban)
+-- =============================================
+CREATE TABLE IF NOT EXISTS tasks (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    project_id UUID REFERENCES projects(id) ON DELETE CASCADE,
+    title TEXT NOT NULL,
+    description TEXT,
+    assignee TEXT,
+    due_date DATE,
+    labels JSONB DEFAULT '[]',
+    position INT DEFAULT 0,
+    is_completed BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- =============================================
+-- TABLA: alerts (Alertas)
+-- =============================================
+CREATE TABLE IF NOT EXISTS alerts (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    project_id UUID REFERENCES projects(id) ON DELETE CASCADE,
+    type TEXT NOT NULL CHECK (
+        type IN ('budget_variance', 'milestone_delay', 'approval_pending', 'blocker', 'payment_overdue')
+    ),
+    severity TEXT DEFAULT 'info' CHECK (
+        severity IN ('info', 'warning', 'critical')
+    ),
+    message TEXT NOT NULL,
+    is_read BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- =============================================
+-- TABLA: comments (Comentarios Portal Cliente)
+-- =============================================
+CREATE TABLE IF NOT EXISTS comments (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    project_id UUID REFERENCES projects(id) ON DELETE CASCADE,
+    user_email TEXT NOT NULL,
+    user_name TEXT,
+    content TEXT NOT NULL,
+    is_internal BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- =============================================
+-- TABLA: activity_log (Registro de Actividad)
+-- =============================================
+CREATE TABLE IF NOT EXISTS activity_log (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    project_id UUID REFERENCES projects(id) ON DELETE CASCADE,
+    action TEXT NOT NULL,
+    description TEXT NOT NULL,
+    user_email TEXT,
+    metadata JSONB DEFAULT '{}',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- =============================================
+-- ÍNDICES para rendimiento
+-- =============================================
+CREATE INDEX idx_projects_client_id ON projects(client_id);
+CREATE INDEX idx_projects_status ON projects(status);
+CREATE INDEX idx_quotes_project_id ON quotes(project_id);
+CREATE INDEX idx_invoices_project_id ON invoices(project_id);
+CREATE INDEX idx_tasks_project_id ON tasks(project_id);
+CREATE INDEX idx_alerts_project_id ON alerts(project_id);
+CREATE INDEX idx_alerts_is_read ON alerts(is_read);
+CREATE INDEX idx_comments_project_id ON comments(project_id);
+CREATE INDEX idx_activity_log_project_id ON activity_log(project_id);
+
+-- =============================================
+-- FUNCIÓN: Actualizar updated_at automáticamente
+-- =============================================
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Triggers para updated_at
+CREATE TRIGGER update_clients_updated_at BEFORE UPDATE ON clients
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_projects_updated_at BEFORE UPDATE ON projects
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_quotes_updated_at BEFORE UPDATE ON quotes
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_invoices_updated_at BEFORE UPDATE ON invoices
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_tasks_updated_at BEFORE UPDATE ON tasks
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- =============================================
+-- FUNCIÓN: Generar número de factura automático
+-- =============================================
+CREATE OR REPLACE FUNCTION generate_invoice_number()
+RETURNS TEXT AS $$
+DECLARE
+    year_prefix TEXT;
+    next_number INT;
+    invoice_num TEXT;
+BEGIN
+    year_prefix := TO_CHAR(CURRENT_DATE, 'YYYY');
+    
+    SELECT COALESCE(MAX(CAST(SUBSTRING(invoice_number FROM 6) AS INT)), 0) + 1
+    INTO next_number
+    FROM invoices
+    WHERE invoice_number LIKE year_prefix || '%';
+    
+    invoice_num := year_prefix || LPAD(next_number::TEXT, 4, '0');
+    
+    RETURN invoice_num;
+END;
+$$ LANGUAGE plpgsql;
+
+-- =============================================
+-- DATOS DE EJEMPLO (Opcional - para testing)
+-- =============================================
+-- Cliente de ejemplo
+INSERT INTO clients (company_name, contact_person, email, phone, language)
+VALUES (
+    'TechStartup SL',
+    'María García',
+    'maria@techstartup.es',
+    '+34 600 123 456',
+    'es'
+) ON CONFLICT (email) DO NOTHING;
+
+-- Proyecto de ejemplo
+INSERT INTO projects (client_id, name, description, budget, status, priority)
+SELECT 
+    id,
+    'Implementación Chatbot RAG',
+    'Desarrollo de chatbot inteligente con RAG y fine-tuning',
+    28500.00,
+    'propuesta',
+    'high'
+FROM clients WHERE email = 'maria@techstartup.es'
+LIMIT 1
+ON CONFLICT DO NOTHING;</pre>
+            </div>
+
+            <div class="success">
+                <strong>✅ Resultado esperado:</strong> Deberías ver "Success. No rows returned" si todo se ejecutó correctamente.
+            </div>
+        </div>
+
+        <!-- Paso 3: RLS Policies -->
+        <div class="card">
+            <h2>🔒 Paso 3: Row Level Security (RLS) Policies</h2>
+            
+            <p>Ejecuta este script para configurar la seguridad a nivel de fila:</p>
+
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                <pre>-- =============================================
+-- ROW LEVEL SECURITY POLICIES
+-- =============================================
+
+-- Habilitar RLS en todas las tablas
+ALTER TABLE clients ENABLE ROW LEVEL SECURITY;
+ALTER TABLE projects ENABLE ROW LEVEL SECURITY;
+ALTER TABLE quotes ENABLE ROW LEVEL SECURITY;
+ALTER TABLE invoices ENABLE ROW LEVEL SECURITY;
+ALTER TABLE tasks ENABLE ROW LEVEL SECURITY;
+ALTER TABLE alerts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE comments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE activity_log ENABLE ROW LEVEL SECURITY;
+
+-- =============================================
+-- CLIENTS: Solo usuarios autenticados pueden ver/editar
+-- =============================================
+CREATE POLICY "Usuarios autenticados pueden ver clientes"
+    ON clients FOR SELECT
+    TO authenticated
+    USING (true);
+
+CREATE POLICY "Usuarios autenticados pueden crear clientes"
+    ON clients FOR INSERT
+    TO authenticated
+    WITH CHECK (true);
+
+CREATE POLICY "Usuarios autenticados pueden actualizar clientes"
+    ON clients FOR UPDATE
+    TO authenticated
+    USING (true);
+
+-- =============================================
+-- PROJECTS: Control por cliente
+-- =============================================
+CREATE POLICY "Usuarios autenticados pueden ver proyectos"
+    ON projects FOR SELECT
+    TO authenticated
+    USING (true);
+
+CREATE POLICY "Clientes pueden ver sus proyectos"
+    ON projects FOR SELECT
+    TO anon
+    USING (
+        client_id IN (
+            SELECT id FROM clients WHERE email = current_setting('request.jwt.claims', true)::json->>'email'
+        )
+    );
+
+CREATE POLICY "Usuarios autenticados pueden crear proyectos"
+    ON projects FOR INSERT
+    TO authenticated
+    WITH CHECK (true);
+
+CREATE POLICY "Usuarios autenticados pueden actualizar proyectos"
+    ON projects FOR UPDATE
+    TO authenticated
+    USING (true);
+
+-- =============================================
+-- QUOTES: Acceso para clientes y equipo
+-- =============================================
+CREATE POLICY "Usuarios autenticados pueden gestionar presupuestos"
+    ON quotes FOR ALL
+    TO authenticated
+    USING (true);
+
+CREATE POLICY "Clientes pueden ver sus presupuestos"
+    ON quotes FOR SELECT
+    TO anon
+    USING (
+        project_id IN (
+            SELECT p.id FROM projects p
+            JOIN clients c ON p.client_id = c.id
+            WHERE c.email = current_setting('request.jwt.claims', true)::json->>'email'
+        )
+    );
+
+-- =============================================
+-- INVOICES: Similar a quotes
+-- =============================================
+CREATE POLICY "Usuarios autenticados pueden gestionar facturas"
+    ON invoices FOR ALL
+    TO authenticated
+    USING (true);
+
+CREATE POLICY "Clientes pueden ver sus facturas"
+    ON invoices FOR SELECT
+    TO anon
+    USING (
+        project_id IN (
+            SELECT p.id FROM projects p
+            JOIN clients c ON p.client_id = c.id
+            WHERE c.email = current_setting('request.jwt.claims', true)::json->>'email'
+        )
+    );
+
+-- =============================================
+-- TASKS: Solo equipo interno
+-- =============================================
+CREATE POLICY "Usuarios autenticados pueden gestionar tareas"
+    ON tasks FOR ALL
+    TO authenticated
+    USING (true);
+
+-- =============================================
+-- ALERTS: Solo equipo interno
+-- =============================================
+CREATE POLICY "Usuarios autenticados pueden gestionar alertas"
+    ON alerts FOR ALL
+    TO authenticated
+    USING (true);
+
+-- =============================================
+-- COMMENTS: Clientes y equipo
+-- =============================================
+CREATE POLICY "Usuarios autenticados pueden ver todos los comentarios"
+    ON comments FOR SELECT
+    TO authenticated
+    USING (true);
+
+CREATE POLICY "Clientes pueden ver comentarios no internos de sus proyectos"
+    ON comments FOR SELECT
+    TO anon
+    USING (
+        is_internal = false AND
+        project_id IN (
+            SELECT p.id FROM projects p
+            JOIN clients c ON p.client_id = c.id
+            WHERE c.email = current_setting('request.jwt.claims', true)::json->>'email'
+        )
+    );
+
+CREATE POLICY "Cualquiera puede insertar comentarios"
+    ON comments FOR INSERT
+    WITH CHECK (true);
+
+-- =============================================
+-- ACTIVITY_LOG: Solo lectura para todos
+-- =============================================
+CREATE POLICY "Usuarios autenticados pueden ver logs"
+    ON activity_log FOR SELECT
+    TO authenticated
+    USING (true);
+
+CREATE POLICY "Clientes pueden ver logs de sus proyectos"
+    ON activity_log FOR SELECT
+    TO anon
+    USING (
+        project_id IN (
+            SELECT p.id FROM projects p
+            JOIN clients c ON p.client_id = c.id
+            WHERE c.email = current_setting('request.jwt.claims', true)::json->>'email'
+        )
+    );</pre>
+            </div>
+
+            <div class="note">
+                <strong>💡 Nota:</strong> Estas políticas aseguran que los clientes solo puedan ver sus propios datos, mientras que el equipo autenticado tiene acceso completo.
+            </div>
+        </div>
+
+        <!-- Paso 4: Storage Buckets -->
+        <div class="card">
+            <h2>📁 Paso 4: Configurar Storage para Archivos</h2>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                <strong>Crear buckets en Supabase</strong>
+                <p>Ve a Storage en tu dashboard y crea estos buckets:</p>
+            </div>
+
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                <pre>-- Ejecutar en SQL Editor para crear policies de storage
+
+-- Bucket: quotes-pdfs (Presupuestos)
+INSERT INTO storage.buckets (id, name, public) 
+VALUES ('quotes-pdfs', 'quotes-pdfs', true)
+ON CONFLICT DO NOTHING;
+
+-- Bucket: invoices-pdfs (Facturas)
+INSERT INTO storage.buckets (id, name, public) 
+VALUES ('invoices-pdfs', 'invoices-pdfs', true)
+ON CONFLICT DO NOTHING;
+
+-- Bucket: documents (Documentos generales)
+INSERT INTO storage.buckets (id, name, public) 
+VALUES ('documents', 'documents', true)
+ON CONFLICT DO NOTHING;
+
+-- =============================================
+-- STORAGE POLICIES
+-- =============================================
+
+-- Quotes: Solo autenticados pueden subir
+CREATE POLICY "Usuarios autenticados pueden subir presupuestos"
+    ON storage.objects FOR INSERT
+    TO authenticated
+    WITH CHECK (bucket_id = 'quotes-pdfs');
+
+-- Cualquiera puede ver presupuestos (public bucket)
+CREATE POLICY "Presupuestos son públicamente accesibles"
+    ON storage.objects FOR SELECT
+    TO public
+    USING (bucket_id = 'quotes-pdfs');
+
+-- Invoices: Solo autenticados pueden subir
+CREATE POLICY "Usuarios autenticados pueden subir facturas"
+    ON storage.objects FOR INSERT
+    TO authenticated
+    WITH CHECK (bucket_id = 'invoices-pdfs');
+
+CREATE POLICY "Facturas son públicamente accesibles"
+    ON storage.objects FOR SELECT
+    TO public
+    USING (bucket_id = 'invoices-pdfs');
+
+-- Documents: Control más estricto
+CREATE POLICY "Usuarios autenticados pueden gestionar documentos"
+    ON storage.objects FOR ALL
+    TO authenticated
+    USING (bucket_id = 'documents');</pre>
+            </div>
+        </div>
+
+        <!-- Paso 5: Proyecto React -->
+        <div class="card">
+            <h2>⚛️ Paso 5: Setup Proyecto React + TypeScript</h2>
+            
+            <h3>Crear proyecto base</h3>
+            <div class="command">npm create vite@latest anclora-app -- --template react-ts</div>
+            <div class="command">cd anclora-app</div>
+            <div class="command">npm install</div>
+
+            <h3>Instalar dependencias necesarias</h3>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                <pre>npm install @supabase/supabase-js
+npm install @hello-pangea/dnd
+npm install @radix-ui/react-dialog @radix-ui/react-dropdown-menu
+npm install lucide-react
+npm install zustand
+npm install react-router-dom
+npm install @react-pdf/renderer
+npm install date-fns</pre>
+            </div>
+
+            <h3>Estructura de carpetas</h3>
+            <div class="code-block">
+                <pre class="file-tree">anclora-app/
+├── <span class="folder">src/</span>
+│   ├── <span class="folder">lib/</span>
+│   │   ├── <span class="file">supabase.ts</span>          # Cliente Supabase
+│   │   ├── <span class="file">types.ts</span>             # TypeScript types
+│   │   └── <span class="file">utils.ts</span>             # Funciones auxiliares
+│   ├── <span class="folder">components/</span>
+│   │   ├── <span class="file">KanbanBoard.tsx</span>      # Tablero Kanban
+│   │   ├── <span class="file">QuoteGenerator.tsx</span>   # Generador presupuestos
+│   │   ├── <span class="file">InvoiceGenerator.tsx</span> # Generador facturas
+│   │   ├── <span class="file">ClientPortal.tsx</span>     # Portal cliente
+│   │   └── <span class="file">AlertsPanel.tsx</span>      # Panel de alertas
+│   ├── <span class="folder">pages/</span>
+│   │   ├── <span class="file">Dashboard.tsx</span>        # Página principal
+│   │   ├── <span class="file">Projects.tsx</span>         # Vista proyectos
+│   │   ├── <span class="file">Clients.tsx</span>          # Vista clientes
+│   │   └── <span class="file">Login.tsx</span>            # Autenticación
+│   ├── <span class="folder">hooks/</span>
+│   │   ├── <span class="file">useProjects.ts</span>       # Hook proyectos
+│   │   └── <span class="file">useAuth.ts</span>           # Hook auth
+│   ├── <span class="file">App.tsx</span>
+│   └── <span class="file">main.tsx</span>
+├── <span class="file">.env.local</span>                    # Variables entorno
+└── <span class="file">package.json</span></pre>
+            </div>
+        </div>
+
+        <!-- Archivos de configuración -->
+        <div class="grid">
+            <div class="card">
+                <h2>⚙️ Archivo: .env.local</h2>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                    <pre># Supabase Configuration
+VITE_SUPABASE_URL=https://xxxxx.supabase.co
+VITE_SUPABASE_ANON_KEY=eyJhbG...
+
+# API IA Local (Ollama)
+VITE_AI_API_URL=https://your-ngrok-url.ngrok.io
+
+# Configuración App
+VITE_APP_NAME=Anclora Cognitive Solutions
+VITE_COMPANY_NIF=B12345678</pre>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>🔧 Archivo: src/lib/supabase.ts</h2>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                    <pre>import { createClient } from '@supabase/supabase-js';
+import type { Database } from './types';
+
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error('Faltan variables de entorno de Supabase');
+}
+
+export const supabase = createClient&lt;Database&gt;(
+  supabaseUrl,
+  supabaseAnonKey,
+  {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+    },
+    realtime: {
+      params: {
+        eventsPerSecond: 10,
+      },
+    },
+  }
+);
+
+// Tipos helper
+export type Tables&lt;T extends keyof Database['public']['Tables']&gt; = 
+  Database['public']['Tables'][T]['Row'];
+
+export type Enums&lt;T extends keyof Database['public']['Enums']&gt; = 
+  Database['public']['Enums'][T];</pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h2>📝 Archivo: src/lib/types.ts</h2>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                    <pre>export interface Database {
+  public: {
+    Tables: {
+      clients: {
+        Row: {
+          id: string;
+          company_name: string;
+          contact_person: string | null;
+          email: string;
+          phone: string | null;
+          address: string | null;
+          nif_cif: string | null;
+          language: 'es' | 'en' | 'ca';
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: Omit&lt;Database['public']['Tables']['clients']['Row'], 'id' | 'created_at' | 'updated_at'&gt;;
+        Update: Partial&lt;Database['public']['Tables']['clients']['Insert']&gt;;
+      };
+      projects: {
+        Row: {
+          id: string;
+          client_id: string;
+          name: string;
+          description: string | null;
+          budget: number | null;
+          spent: number;
+          status: 'backlog' | 'propuesta' | 'aprobado' | 'en_progreso' | 'testing' | 'completado' | 'cancelado';
+          priority: 'low' | 'medium' | 'high' | 'urgent';
+          stage_order: number;
+          due_date: string | null;
+          alert_config: Record&lt;string, any&gt;;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: Omit&lt;Database['public']['Tables']['projects']['Row'], 'id' | 'created_at' | 'updated_at'&gt;;
+        Update: Partial&lt;Database['public']['Tables']['projects']['Insert']&gt;;
+      };
+      quotes: {
+        Row: {
+          id: string;
+          project_id: string;
+          version: number;
+          language: 'es' | 'en' | 'ca';
+          tone: 'técnico' | 'sencillo' | 'formal' | 'profesional' | 'consultivo' | 'casual';
+          services: ServiceItem[];
+          subtotal: number;
+          tax_rate: number;
+          tax_amount: number;
+          total: number;
+          status: 'draft' | 'sent' | 'viewed' | 'accepted' | 'rejected';
+          pdf_url: string | null;
+          valid_until: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: Omit&lt;Database['public']['Tables']['quotes']['Row'], 'id' | 'created_at' | 'updated_at'&gt;;
+        Update: Partial&lt;Database['public']['Tables']['quotes']['Insert']&gt;;
+      };
+      // ... otras tablas
+    };
+    Enums: {
+      project_status: 'backlog' | 'propuesta' | 'aprobado' | 'en_progreso' | 'testing' | 'completado' | 'cancelado';
+      priority_level: 'low' | 'medium' | 'high' | 'urgent';
+    };
+  };
+}
+
+export interface ServiceItem {
+  name: string;
+  description: string;
+  hours: number;
+  hourly_rate: number;
+  amount: number;
+}
+
+export interface AlertConfig {
+  budget_variance?: { threshold: number; action: string };
+  milestone_delay?: { threshold: number; unit: string };
+}</pre>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>🎣 Archivo: src/hooks/useAuth.ts</h2>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                    <pre>import { useEffect, useState } from 'react';
+import { supabase } from '@/lib/supabase';
+import type { User } from '@supabase/supabase-js';
+
+export function useAuth() {
+  const [user, setUser] = useState&lt;User | null&gt;(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Obtener sesión actual
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
+
+    // Escuchar cambios de autenticación
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const signIn = async (email: string, password: string) => {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    return { data, error };
+  };
+
+  const signUp = async (email: string, password: string) => {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+    return { data, error };
+  };
+
+  const signOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    return { error };
+  };
+
+  return {
+    user,
+    loading,
+    signIn,
+    signUp,
+    signOut,
+  };
+}</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Componente Kanban -->
+        <div class="card">
+            <h2>📊 Componente: KanbanBoard.tsx</h2>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+                <pre>import { useEffect, useState } from 'react';
+import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
+import { supabase, type Tables } from '@/lib/supabase';
+import { AlertCircle, Clock, TrendingUp } from 'lucide-react';
+
+type Project = Tables&lt;'projects'&gt; & {
+  clients?: { company_name: string };
+  alerts?: { count: number }[];
+};
+
+const COLUMNS = [
+  { id: 'backlog', title: 'Backlog', color: '#64748b' },
+  { id: 'propuesta', title: 'Propuesta', color: '#3b82f6' },
+  { id: 'aprobado', title: 'Aprobado', color: '#8b5cf6' },
+  { id: 'en_progreso', title: 'En Progreso', color: '#f59e0b' },
+  { id: 'testing', title: 'Testing', color: '#ec4899' },
+  { id: 'completado', title: 'Completado', color: '#22c55e' },
+] as const;
+
+export function KanbanBoard() {
+  const [projects, setProjects] = useState&lt;Project[]&gt;([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchProjects();
+
+    // Suscripción realtime a cambios
+    const subscription = supabase
+      .channel('projects-changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'projects' },
+        () => {
+          fetchProjects();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  const fetchProjects = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('projects')
+        .select(`
+          *,
+          clients (company_name),
+          alerts (count)
+        `)
+        .order('stage_order', { ascending: true });
+
+      if (error) throw error;
+      setProjects(data as Project[]);
+    } catch (error) {
+      console.error('Error fetching projects:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const onDragEnd = async (result: DropResult) => {
+    const { draggableId, destination, source } = result;
+
+    if (!destination) return;
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('projects')
+        .update({
+          status: destination.droppableId as any,
+          stage_order: destination.index,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', draggableId);
+
+      if (error) throw error;
+
+      // Crear log de actividad
+      await supabase.from('activity_log').insert({
+        project_id: draggableId,
+        action: 'status_change',
+        description: `Proyecto movido a ${destination.droppableId}`,
+        user_email: 'system',
+      });
+
+      // Verificar alertas
+      await checkProjectAlerts(draggableId);
+    } catch (error) {
+      console.error('Error updating project:', error);
+    }
+  };
+
+  const checkProjectAlerts = async (projectId: string) => {
+    const project = projects.find((p) => p.id === projectId);
+    if (!project) return;
+
+    // Alerta si gasto &gt; 85% del presupuesto
+    if (project.budget && project.spent &gt; project.budget * 0.85) {
+      await supabase.from('alerts').insert({
+        project_id: projectId,
+        type: 'budget_variance',
+        severity: 'warning',
+        message: `Presupuesto al ${Math.round((project.spent / project.budget) * 100)}%: ${project.spent}€ de ${project.budget}€`,
+      });
+    }
+
+    // Alerta si está retrasado
+    if (project.due_date && new Date(project.due_date) &lt; new Date()) {
+      await supabase.from('alerts').insert({
+        project_id: projectId,
+        type: 'milestone_delay',
+        severity: 'critical',
+        message: `Proyecto retrasado. Fecha límite: ${new Date(project.due_date).toLocaleDateString('es-ES')}`,
+      });
+    }
+  };
+
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case 'urgent': return 'bg-red-500';
+      case 'high': return 'bg-orange-500';
+      case 'medium': return 'bg-yellow-500';
+      default: return 'bg-blue-500';
+    }
+  };
+
+  if (loading) {
+    return &lt;div className="flex items-center justify-center p-8"&gt;Cargando proyectos...&lt;/div&gt;;
+  }
+
+  return (
+    &lt;DragDropContext onDragEnd={onDragEnd}&gt;
+      &lt;div className="flex gap-4 overflow-x-auto pb-4 h-full"&gt;
+        {COLUMNS.map((column) => (
+          &lt;Droppable key={column.id} droppableId={column.id}&gt;
+            {(provided, snapshot) => (
+              &lt;div
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+                className={`
+                  min-w-[320px] rounded-lg p-4
+                  ${snapshot.isDraggingOver ? 'bg-slate-800' : 'bg-slate-900'}
+                  border border-slate-700
+                `}
+              &gt;
+                &lt;div className="flex items-center gap-2 mb-4"&gt;
+                  &lt;div
+                    className="w-3 h-3 rounded-full"
+                    style={{ backgroundColor: column.color }}
+                  /&gt;
+                  &lt;h3 className="font-semibold text-white"&gt;{column.title}&lt;/h3&gt;
+                  &lt;span className="text-sm text-slate-400"&gt;
+                    ({projects.filter((p) => p.status === column.id).length})
+                  &lt;/span&gt;
+                &lt;/div&gt;
+
+                &lt;div className="space-y-3"&gt;
+                  {projects
+                    .filter((project) => project.status === column.id)
+                    .map((project, index) => (
+                      &lt;Draggable
+                        key={project.id}
+                        draggableId={project.id}
+                        index={index}
+                      &gt;
+                        {(provided, snapshot) => (
+                          &lt;div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            className={`
+                              bg-slate-800 rounded-lg p-4 border border-slate-700
+                              ${snapshot.isDragging ? 'shadow-xl' : 'shadow-md'}
+                              hover:border-blue-500 transition-colors cursor-pointer
+                            `}
+                          &gt;
+                            &lt;div className="flex justify-between items-start mb-2"&gt;
+                              &lt;h4 className="font-medium text-white"&gt;{project.name}&lt;/h4&gt;
+                              {project.alerts && project.alerts[0]?.count &gt; 0 && (
+                                &lt;AlertCircle className="h-4 w-4 text-red-500 flex-shrink-0" /&gt;
+                              )}
+                            &lt;/div&gt;
+
+                            &lt;p className="text-sm text-slate-400 mb-3"&gt;
+                              {project.clients?.company_name || 'Sin cliente'}
+                            &lt;/p&gt;
+
+                            &lt;div className="flex gap-2 flex-wrap"&gt;
+                              &lt;span
+                                className={`
+                                  ${getPriorityColor(project.priority)}
+                                  text-white text-xs px-2 py-1 rounded-full
+                                `}
+                              &gt;
+                                {project.priority}
+                              &lt;/span&gt;
+
+                              {project.due_date && (
+                                &lt;span className="bg-slate-700 text-slate-300 text-xs px-2 py-1 rounded-full flex items-center gap-1"&gt;
+                                  &lt;Clock className="h-3 w-3" /&gt;
+                                  {new Date(project.due_date).toLocaleDateString('es-ES')}
+                                &lt;/span&gt;
+                              )}
+
+                              {project.budget && (
+                                &lt;span className="bg-green-900/30 text-green-400 text-xs px-2 py-1 rounded-full flex items-center gap-1"&gt;
+                                  &lt;TrendingUp className="h-3 w-3" /&gt;
+                                  {project.budget.toLocaleString('es-ES')}€
+                                &lt;/span&gt;
+                              )}
+                            &lt;/div&gt;
+                          &lt;/div&gt;
+                        )}
+                      &lt;/Draggable&gt;
+                    ))}
+                &lt;/div&gt;
+
+                {provided.placeholder}
+              &lt;/div&gt;
+            )}
+          &lt;/Droppable&gt;
+        ))}
+      &lt;/div&gt;
+    &lt;/DragDropContext&gt;
+  );
+}</pre>
+            </div>
+        </div>
+
+        <!-- Despliegue -->
+        <div class="card">
+            <h2>🚀 Paso 6: Despliegue</h2>
+            
+            <h3>Opción 1: Vercel (Recomendado - Gratuito)</h3>
+            <div class="step">
+                <span class="step-number">1</span>
+                <strong>Instalar Vercel CLI</strong>
+                <div class="command">npm install -g vercel</div>
+            </div>
+
+            <div class="step">
+                <span class="step-number">2</span>
+                <strong>Conectar con GitHub</strong>
+                <ul>
+                    <li>Crea repositorio en GitHub</li>
+                    <li>Push tu código</li>
+                    <li>Conecta Vercel con GitHub</li>
+                </ul>
+            </div>
+
+            <div class="step">
+                <span class="step-number">3</span>
+                <strong>Configurar variables de entorno</strong>
+                <p>En Vercel Dashboard → Settings → Environment Variables, añade:</p>
+                <ul>
+                    <li><code>VITE_SUPABASE_URL</code></li>
+                    <li><code>VITE_SUPABASE_ANON_KEY</code></li>
+                    <li><code>VITE_AI_API_URL</code></li>
+                </ul>
+            </div>
+
+            <h3>Opción 2: Render.com (Alternativa gratuita)</h3>
+            <div class="command">
+                1. Crear cuenta en render.com<br>
+                2. New → Static Site<br>
+                3. Conectar repositorio GitHub<br>
+                4. Build Command: npm run build<br>
+                5. Publish Directory: dist
+            </div>
+
+            <div class="success">
+                <strong>🎉 ¡Listo!</strong> Tu aplicación estará disponible en una URL tipo: <code>https://anclora-cognitive.vercel.app</code>
+            </div>
+        </div>
+
+        <!-- Próximos pasos -->
+        <div class="card">
+            <h2>🎯 Próximos Pasos</h2>
+            
+            <ol>
+                <li><strong>Configurar Ollama localmente</strong> para generación de presupuestos con IA</li>
+                <li><strong>Implementar Edge Functions</strong> para el sistema de alertas automatizado (cron jobs)</li>
+                <li><strong>Crear componentes UI restantes:</strong>
+                    <ul>
+                        <li>QuoteGenerator.tsx - Generador de presupuestos</li>
+                        <li>InvoiceGenerator.tsx - Generador de facturas</li>
+                        <li>ClientPortal.tsx - Portal del cliente</li>
+                        <li>AlertsPanel.tsx - Panel de alertas</li>
+                    </ul>
+                </li>
+                <li><strong>Añadir autenticación</strong> con página de login</li>
+                <li><strong>Configurar enrutamiento</strong> con React Router</li>
+                <li><strong>Testing</strong> con datos reales</li>
+            </ol>
+
+            <div class="note">
+                <strong>💡 Consejo:</strong> Empieza probando el Kanban Board y la autenticación básica antes de implementar las funcionalidades más complejas.
+            </div>
+        </div>
+
+        <!-- Recursos adicionales -->
+        <div class="card">
+            <h2>📚 Recursos Útiles</h2>
+            
+            <ul>
+                <li><a href="https://supabase.com/docs" target="_blank">Documentación oficial Supabase</a></li>
+                <li><a href="https://supabase.com/docs/guides/auth/row-level-security" target="_blank">Guía RLS Policies</a></li>
+                <li><a href="https://supabase.com/docs/guides/functions" target="_blank">Edge Functions Docs</a></li>
+                <li><a href="https://github.com/atlassian/react-beautiful-dnd" target="_blank">Drag & Drop Library</a></li>
+                <li><a href="https://react-pdf.org/" target="_blank">React PDF Generator</a></li>
+                <li><a href="https://ui.shadcn.com/" target="_blank">shadcn/ui Components</a></li>
+            </ul>
+        </div>
+
+    </div>
+
+    <script>
+        function copyCode(button) {
+            const codeBlock = button.closest('.code-block');
+            const code = codeBlock.querySelector('pre').textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = button.textContent;
+                button.textContent = '✓ Copiado';
+                button.style.background = '#22c55e';
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Error al copiar:', err);
+                alert('No se pudo copiar el código');
+            });
+        }
+
+        // Tab functionality
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabContainer = tab.closest('.tab-container');
+                const tabId = tab.dataset.tab;
+                
+                // Remove active class from all tabs and contents
+                tabContainer.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tabContainer.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                // Add active class to clicked tab and corresponding content
+                tab.classList.add('active');
+                tabContainer.querySelector(`#${tabId}`).classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
+
