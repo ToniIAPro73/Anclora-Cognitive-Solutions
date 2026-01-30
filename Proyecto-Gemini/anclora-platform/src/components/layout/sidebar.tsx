@@ -72,7 +72,7 @@ export function Sidebar() {
 
   return (
     <div className={cn(
-      "relative space-y-4 py-6 flex flex-col h-full bg-white dark:bg-black border-r border-border/60 text-foreground transition-all duration-300 ease-in-out shadow-sm",
+      "relative space-y-4 py-6 flex flex-col h-full bg-background border-r border-border transition-all duration-300 ease-in-out shadow-sm",
       isCollapsed ? "w-20" : "w-72"
     )}>
       {/* modern Toggle Button */}
@@ -123,7 +123,7 @@ export function Sidebar() {
           ))}
         </div>
       </div>
-      <div className="px-6 py-4 border-t border-border/50">
+      <div className="px-6 py-4 border-t border-border">
         <button
           onClick={() => signOut()}
           className={cn(

@@ -12,7 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { Plus, Search, Edit2, Trash2, Eye } from 'lucide-react'
+import { Plus, Search, Edit2, Trash2, Eye, Users } from 'lucide-react'
 import { ClientFormModal } from '@/components/clients/client-form-modal'
 import { deleteClientAction } from '@/app/actions/clients'
 import { toast } from 'react-hot-toast'
