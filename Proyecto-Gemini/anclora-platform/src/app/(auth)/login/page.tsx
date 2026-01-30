@@ -13,6 +13,7 @@ import { toast } from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Bot, ChevronLeft } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
@@ -109,4 +110,3 @@ export default function LoginPage() {
   )
 }
 
-import { cn } from '@/lib/utils'
