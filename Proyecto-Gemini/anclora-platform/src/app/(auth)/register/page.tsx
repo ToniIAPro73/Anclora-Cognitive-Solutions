@@ -3,8 +3,8 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { loginSchema, type LoginFormValues } from '@/lib/validations/auth.schema'
-import { signIn } from '@/app/actions/auth'
+import { registerSchema, type RegisterFormValues } from '@/lib/validations/auth.schema'
+import { signUp } from '@/app/actions/auth'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -13,7 +13,7 @@ import { toast } from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
@@ -21,34 +21,44 @@ export default function LoginPage() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
+  } = useForm<RegisterFormValues>({
+    resolver: zodResolver(registerSchema),
   })
 
-  const onSubmit = async (data: LoginFormValues) => {
+  const onSubmit = async (data: RegisterFormValues) => {
     setIsLoading(true)
-    const result = await signIn(data)
+    const result = await signUp(data)
     setIsLoading(false)
 
     if (result?.error) {
       toast.error(result.error)
     } else {
-      toast.success('Sesión iniciada correctamente')
+      toast.success('Cuenta creada correctamente. Accediendo...')
       router.push('/dashboard')
     }
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-slate-50 p-4">
-      <Card className="w-full max-w-md">
+    <div className="flex items-center justify-center min-h-screen bg-slate-50 p-4 font-sans">
+      <Card className="w-full max-w-md border-t-4 border-teal-600 shadow-xl">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center">Anclora Cognitive Solutions</CardTitle>
+          <CardTitle className="text-2xl font-bold text-center">Registro Admin</CardTitle>
           <CardDescription className="text-center">
-            Introduce tus credenciales para acceder al dashboard admin
+            Crea tu cuenta de administrador para Anclora
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
           <CardContent className="grid gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="fullName">Nombre Completo</Label>
+              <Input
+                id="fullName"
+                placeholder="Tu nombre aquí"
+                {...register('fullName')}
+                className={errors.fullName ? 'border-red-500' : ''}
+              />
+              {errors.fullName && <p className="text-xs text-red-500">{errors.fullName.message}</p>}
+            </div>
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -71,15 +81,26 @@ export default function LoginPage() {
               />
               {errors.password && <p className="text-xs text-red-500">{errors.password.message}</p>}
             </div>
+            <div className="grid gap-2">
+              <Label htmlFor="confirmPassword">Confirmar Contraseña</Label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                placeholder="********"
+                {...register('confirmPassword')}
+                className={errors.confirmPassword ? 'border-red-500' : ''}
+              />
+              {errors.confirmPassword && <p className="text-xs text-red-500">{errors.confirmPassword.message}</p>}
+            </div>
           </CardContent>
           <CardFooter className="flex flex-col gap-4">
             <Button className="w-full bg-teal-600 hover:bg-teal-700 h-11" type="submit" disabled={isLoading}>
-              {isLoading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
+              {isLoading ? 'Creando cuenta...' : 'Registrarse'}
             </Button>
             <p className="text-center text-sm text-slate-600">
-              ¿No tienes cuenta?{' '}
-              <Link href="/register" className="text-teal-600 font-semibold hover:underline">
-                Regístrate
+              ¿Ya tienes cuenta?{' '}
+              <Link href="/login" className="text-teal-600 font-semibold hover:underline">
+                Inicia sesión
               </Link>
             </p>
           </CardFooter>

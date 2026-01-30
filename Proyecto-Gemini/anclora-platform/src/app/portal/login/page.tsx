@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { toast } from 'react-hot-toast'
+import Link from 'next/link'
 
 export default function ClientLoginPage() {
   const [isLoading, setIsLoading] = useState(false)
@@ -77,10 +78,16 @@ export default function ClientLoginPage() {
               {errors.email && <p className="text-xs text-red-500">{errors.email.message}</p>}
             </div>
           </CardContent>
-          <CardFooter>
-            <Button className="w-full bg-teal-600 hover:bg-teal-700" type="submit" disabled={isLoading}>
+          <CardFooter className="flex flex-col gap-4">
+            <Button className="w-full bg-teal-600 hover:bg-teal-700 h-11" type="submit" disabled={isLoading}>
               {isLoading ? 'Enviando enlace...' : 'Enviar enlace de acceso'}
             </Button>
+            <p className="text-center text-sm text-slate-600">
+              ¿No estás registrado?{' '}
+              <Link href="/portal/register" className="text-teal-600 font-semibold hover:underline">
+                Darse de alta
+              </Link>
+            </p>
           </CardFooter>
         </form>
       </Card>
