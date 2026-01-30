@@ -13,11 +13,11 @@ interface KanbanColumnProps {
 
 export function KanbanColumn({ id, title, projects, onCardClick }: KanbanColumnProps) {
   return (
-    <div className="flex flex-col w-[300px] shrink-0 bg-slate-50/50 rounded-lg p-2">
-      <div className="flex items-center justify-between mb-4 px-2">
-        <h3 className="font-bold text-sm text-slate-700 uppercase tracking-wider flex items-center">
+    <div className="flex flex-col w-[320px] shrink-0 bg-muted/40 dark:bg-card/30 backdrop-blur-md rounded-2xl p-3 border border-border/50 shadow-inner">
+      <div className="flex items-center justify-between mb-5 px-3">
+        <h3 className="font-extrabold text-xs text-foreground/80 uppercase tracking-[0.2em] flex items-center">
           {title}
-          <span className="ml-2 bg-slate-200 text-slate-600 rounded-full px-2 py-0.5 text-[10px]">
+          <span className="ml-3 bg-primary/10 text-primary rounded-lg px-2 py-0.5 text-[10px] border border-primary/20 shadow-sm">
             {projects.length}
           </span>
         </h3>
@@ -28,8 +28,8 @@ export function KanbanColumn({ id, title, projects, onCardClick }: KanbanColumnP
             ref={provided.innerRef}
             {...provided.droppableProps}
             className={cn(
-              'flex-1 min-h-[500px] transition-colors rounded-md p-1',
-              snapshot.isDraggingOver ? 'bg-teal-50/50' : ''
+              'flex-1 min-h-[500px] transition-all duration-300 rounded-xl p-2 space-y-4',
+              snapshot.isDraggingOver ? 'bg-primary/5 ring-1 ring-primary/20 ring-inset' : ''
             )}
           >
             {projects.map((project, index) => (

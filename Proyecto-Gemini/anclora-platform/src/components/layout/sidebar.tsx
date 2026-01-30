@@ -72,7 +72,7 @@ export function Sidebar() {
 
   return (
     <div className={cn(
-      "relative space-y-4 py-6 flex flex-col h-full bg-slate-50 dark:bg-black border-r border-border/50 text-foreground transition-all duration-300 ease-in-out shadow-sm",
+      "relative space-y-4 py-6 flex flex-col h-full bg-white dark:bg-black border-r border-border/60 text-foreground transition-all duration-300 ease-in-out shadow-sm",
       isCollapsed ? "w-20" : "w-72"
     )}>
       {/* modern Toggle Button */}
