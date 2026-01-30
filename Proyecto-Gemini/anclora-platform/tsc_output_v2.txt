@@ -1,0 +1,15 @@
+src/app/actions/auth.ts(17,36): error TS2339: Property 'auth' does not exist on type 'Promise<SupabaseClient<any, "public", "public", any, any>>'.
+src/app/actions/auth.ts(44,6): error TS2339: Property 'from' does not exist on type 'Promise<SupabaseClient<any, "public", "public", any, any>>'.
+src/app/actions/auth.ts(53,36): error TS2339: Property 'auth' does not exist on type 'Promise<SupabaseClient<any, "public", "public", any, any>>'.
+src/app/actions/auth.ts(69,18): error TS2339: Property 'auth' does not exist on type 'Promise<SupabaseClient<any, "public", "public", any, any>>'.
+src/app/actions/clients.ts(15,36): error TS2339: Property 'from' does not exist on type 'Promise<SupabaseClient<any, "public", "public", any, any>>'.
+src/app/actions/clients.ts(34,6): error TS2339: Property 'from' does not exist on type 'Promise<SupabaseClient<any, "public", "public", any, any>>'.
+src/app/actions/clients.ts(51,6): error TS2339: Property 'from' does not exist on type 'Promise<SupabaseClient<any, "public", "public", any, any>>'.
+src/app/actions/clients.ts(61,36): error TS2339: Property 'from' does not exist on type 'Promise<SupabaseClient<any, "public", "public", any, any>>'.
+src/app/actions/projects.ts(15,36): error TS2339: Property 'from' does not exist on type 'Promise<SupabaseClient<any, "public", "public", any, any>>'.
+src/app/actions/projects.ts(36,6): error TS2339: Property 'from' does not exist on type 'Promise<SupabaseClient<any, "public", "public", any, any>>'.
+src/app/actions/projects.ts(46,6): error TS2339: Property 'from' does not exist on type 'Promise<SupabaseClient<any, "public", "public", any, any>>'.
+src/app/actions/projects.ts(62,6): error TS2339: Property 'from' does not exist on type 'Promise<SupabaseClient<any, "public", "public", any, any>>'.
+src/app/actions/projects.ts(77,36): error TS2339: Property 'from' does not exist on type 'Promise<SupabaseClient<any, "public", "public", any, any>>'.
+src/app/actions/quotes.ts(10,6): error TS2339: Property 'from' does not exist on type 'Promise<SupabaseClient<any, "public", "public", any, any>>'.
+src/app/actions/quotes.ts(37,6): error TS2339: Property 'from' does not exist on type 'Promise<SupabaseClient<any, "public", "public", any, any>>'.
