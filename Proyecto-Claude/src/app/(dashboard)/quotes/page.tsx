@@ -12,7 +12,7 @@ export default function QuotesPage() {
       <PageHeader
         title="Presupuestos"
         description="Gestiona todos tus presupuestos"
-        action={
+        actions={
           <Button asChild>
             <Link href="/dashboard/quotes/new">
               <Plus className="mr-2 h-4 w-4" />

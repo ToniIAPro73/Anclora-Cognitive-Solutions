@@ -12,7 +12,7 @@ export default function ProjectsPage() {
       <PageHeader
         title="Proyectos"
         description="Gestiona todos tus proyectos"
-        action={
+        actions={
           <Button asChild>
             <Link href="/dashboard/projects/new">
               <Plus className="mr-2 h-4 w-4" />

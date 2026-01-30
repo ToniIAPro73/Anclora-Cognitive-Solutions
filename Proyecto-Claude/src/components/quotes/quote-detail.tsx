@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { updateQuoteStatus } from '@/app/actions/quotes'
+import { sendQuoteByEmail } from '@/app/actions/email'
 import { cn, formatDate, formatCurrency } from '@/lib/utils'
 import type { QuoteWithProject, Quote, QuoteContent } from '@/types/database.types'
 import {
@@ -25,8 +26,12 @@ import {
   Building,
   Calendar,
   User,
+  Loader2,
+  Mail,
 } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { downloadQuotePDF } from '@/lib/pdf'
+import { SendEmailModal } from '@/components/email/send-email-modal'
 
 interface QuoteDetailProps {
   quote: QuoteWithProject
@@ -50,7 +55,10 @@ const STATUS_COLORS: Record<Quote['status'], string> = {
 
 export function QuoteDetail({ quote }: QuoteDetailProps) {
   const queryClient = useQueryClient()
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false)
+  const [showEmailModal, setShowEmailModal] = useState(false)
   const content = quote.content_json as QuoteContent | null
+  const client = quote.projects?.clients
 
   const updateStatusMutation = useMutation({
     mutationFn: (status: Quote['status']) => updateQuoteStatus(quote.quote_id, status),
@@ -62,6 +70,30 @@ export function QuoteDetail({ quote }: QuoteDetailProps) {
       toast.error(error.message)
     },
   })
+
+  const handleDownloadPDF = async () => {
+    setIsGeneratingPDF(true)
+    try {
+      await downloadQuotePDF(
+        quote.quote_id,
+        quote.projects?.project_name || 'presupuesto',
+        quote.version
+      )
+      toast.success('PDF generado correctamente')
+    } catch {
+      toast.error('Error al generar el PDF')
+    } finally {
+      setIsGeneratingPDF(false)
+    }
+  }
+
+  const handleSendEmail = async (customMessage?: string) => {
+    const result = await sendQuoteByEmail(quote.quote_id, customMessage)
+    if (result.success) {
+      queryClient.invalidateQueries({ queryKey: ['quotes'] })
+    }
+    return result
+  }
 
   return (
     <div className="space-y-6">
@@ -83,14 +115,25 @@ export function QuoteDetail({ quote }: QuoteDetailProps) {
         </div>
 
         <div className="flex items-center gap-2">
-          {quote.pdf_url && (
-            <Button variant="outline" asChild>
-              <a href={quote.pdf_url} target="_blank" rel="noopener noreferrer">
-                <Download className="mr-2 h-4 w-4" />
-                Descargar PDF
-              </a>
+          {client?.email && quote.status === 'draft' && (
+            <Button onClick={() => setShowEmailModal(true)}>
+              <Mail className="mr-2 h-4 w-4" />
+              Enviar por email
             </Button>
           )}
+
+          <Button
+            variant="outline"
+            onClick={handleDownloadPDF}
+            disabled={isGeneratingPDF}
+          >
+            {isGeneratingPDF ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Download className="mr-2 h-4 w-4" />
+            )}
+            {isGeneratingPDF ? 'Generando...' : 'Descargar PDF'}
+          </Button>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -105,6 +148,12 @@ export function QuoteDetail({ quote }: QuoteDetailProps) {
                 >
                   <Send className="mr-2 h-4 w-4" />
                   Marcar como enviado
+                </DropdownMenuItem>
+              )}
+              {client?.email && quote.status !== 'draft' && (
+                <DropdownMenuItem onClick={() => setShowEmailModal(true)}>
+                  <Mail className="mr-2 h-4 w-4" />
+                  Reenviar por email
                 </DropdownMenuItem>
               )}
               {(quote.status === 'sent' || quote.status === 'viewed') && (
@@ -282,6 +331,19 @@ export function QuoteDetail({ quote }: QuoteDetailProps) {
           </div>
         </CardContent>
       </Card>
+
+      {/* Email Modal */}
+      {client && (
+        <SendEmailModal
+          open={showEmailModal}
+          onOpenChange={setShowEmailModal}
+          type="quote"
+          recipientEmail={client.email || ''}
+          recipientName={client.company_name || client.contact_name || 'Cliente'}
+          documentNumber={`v${quote.version}`}
+          onSend={handleSendEmail}
+        />
+      )}
     </div>
   )
 }

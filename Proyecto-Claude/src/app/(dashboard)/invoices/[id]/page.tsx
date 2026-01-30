@@ -18,7 +18,7 @@ export default async function InvoiceDetailPage({ params }: InvoiceDetailPagePro
     <PageContainer>
       <PageHeader
         title={`Factura ${result.data.invoice_number}`}
-        description={result.data.quotes?.projects?.project_name || 'Sin proyecto'}
+        description={result.data.projects?.project_name || 'Sin proyecto'}
         backHref="/dashboard/invoices"
       />
 

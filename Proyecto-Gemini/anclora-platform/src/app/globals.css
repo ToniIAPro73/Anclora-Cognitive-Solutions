@@ -25,6 +25,12 @@
   --color-card: hsl(var(--card));
   --color-card-foreground: hsl(var(--card-foreground));
 
+  /* Brand Colors */
+  --color-brand-navy: #192350;
+  --color-brand-blue: #AFD2FA;
+  --color-brand-gold: #D4AF37;
+  --color-brand-white: #F5F5F0;
+
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 2px);
   --radius-sm: calc(var(--radius) - 4px);
@@ -91,9 +97,13 @@
 
 @layer base {
   * {
-    @apply border-border;
+    border-color: var(--color-border);
   }
   body {
-    @apply bg-background text-foreground transition-colors duration-300;
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms;
   }
 }

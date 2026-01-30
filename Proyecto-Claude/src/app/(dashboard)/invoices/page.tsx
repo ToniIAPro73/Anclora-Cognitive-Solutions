@@ -12,7 +12,7 @@ export default function InvoicesPage() {
       <PageHeader
         title="Facturas"
         description="Gestiona todas tus facturas"
-        action={
+        actions={
           <Button asChild>
             <Link href="/dashboard/invoices/new">
               <Plus className="mr-2 h-4 w-4" />

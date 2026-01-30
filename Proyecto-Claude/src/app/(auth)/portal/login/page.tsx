@@ -37,23 +37,25 @@ export default function PortalLoginPage() {
     const supabase = createClient()
 
     // Check if email exists in clients table
-    const { data: client, error: clientError } = await supabase
+    const { data: clientData, error: clientError } = await supabase
       .from('clients')
       .select('client_id')
       .eq('email', data.email)
-      .single()
+      .single<{ client_id: string }>()
 
-    if (clientError || !client) {
+    if (clientError || !clientData) {
       toast.error('Este email no está registrado como cliente')
       setIsLoading(false)
       return
     }
 
+    const clientId = clientData.client_id
+
     // Send magic link
     const { error } = await supabase.auth.signInWithOtp({
       email: data.email,
       options: {
-        emailRedirectTo: `${window.location.origin}/portal/client/${client.client_id}`,
+        emailRedirectTo: `${window.location.origin}/portal/client/${clientId}`,
       },
     })
 

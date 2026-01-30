@@ -216,12 +216,19 @@ export async function deleteQuote(quoteId: string): Promise<ActionResult> {
   }
 }
 
+export interface AIServiceInput {
+  name: string
+  description: string
+  estimated_hours: number
+  hourly_rate: number
+}
+
 export async function generateQuoteWithAI(params: {
   project_id: string
   client_name: string
   project_name: string
   project_description?: string
-  services: { name: string; custom_hours?: number; description_detail?: string }[]
+  services: AIServiceInput[]
   language: 'es' | 'en' | 'ca'
   tone: string
   technical_depth: number
@@ -254,11 +261,11 @@ export async function generateQuoteWithAI(params: {
 
     const data = await response.json()
 
-    if (!data.success || !data.quote) {
-      throw new Error('Respuesta inválida del servicio de IA')
+    if (!data.success || !data.content) {
+      throw new Error(data.error || 'Respuesta inválida del servicio de IA')
     }
 
-    return { success: true, data: data.quote as QuoteContent }
+    return { success: true, data: data.content as QuoteContent }
   } catch (error) {
     return {
       success: false,

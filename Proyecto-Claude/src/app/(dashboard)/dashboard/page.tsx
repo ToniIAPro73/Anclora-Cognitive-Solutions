@@ -12,7 +12,7 @@ async function getStats() {
     supabase.from('clients').select('*', { count: 'exact', head: true }),
     supabase.from('projects').select('*', { count: 'exact', head: true }).eq('archived', false),
     supabase.from('quotes').select('*', { count: 'exact', head: true }),
-    supabase.from('invoices').select('total').eq('status', 'paid'),
+    supabase.from('invoices').select('total').eq('status', 'paid').returns<{ total: number }[]>(),
     supabase.from('alerts').select('*', { count: 'exact', head: true }).eq('is_read', false),
   ])
 
@@ -27,15 +27,23 @@ async function getStats() {
   }
 }
 
+interface RecentProject {
+  project_id: string
+  project_name: string
+  status: string
+  clients: { company_name: string } | null
+}
+
 async function getRecentProjects() {
   const supabase = await createServerSupabaseClient()
 
   const { data } = await supabase
     .from('projects')
-    .select('*, clients(company_name)')
+    .select('project_id, project_name, status, clients(company_name)')
     .eq('archived', false)
     .order('updated_at', { ascending: false })
     .limit(5)
+    .returns<RecentProject[]>()
 
   return data || []
 }
@@ -124,7 +132,7 @@ export default async function DashboardPage() {
                     <div>
                       <p className="font-medium">{project.project_name}</p>
                       <p className="text-sm text-muted-foreground">
-                        {(project.clients as { company_name: string })?.company_name}
+                        {project.clients?.company_name}
                       </p>
                     </div>
                     <span className="text-xs capitalize text-muted-foreground">

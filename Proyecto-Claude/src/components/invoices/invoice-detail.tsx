@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -11,6 +12,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { updateInvoiceStatus } from '@/app/actions/invoices'
+import { sendInvoiceByEmail, sendPaymentReminderEmail } from '@/app/actions/email'
+import { downloadInvoicePDF } from '@/lib/pdf'
 import { cn, formatDate, formatCurrency } from '@/lib/utils'
 import type { InvoiceWithProject, Invoice } from '@/types/database.types'
 import {
@@ -22,8 +25,12 @@ import {
   Building,
   Calendar,
   FileText,
+  Loader2,
+  Mail,
+  Bell,
 } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { SendEmailModal } from '@/components/email/send-email-modal'
 
 interface InvoiceDetailProps {
   invoice: InvoiceWithProject
@@ -54,7 +61,11 @@ interface LineItem {
 
 export function InvoiceDetail({ invoice }: InvoiceDetailProps) {
   const queryClient = useQueryClient()
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false)
+  const [showEmailModal, setShowEmailModal] = useState(false)
+  const [emailModalType, setEmailModalType] = useState<'invoice' | 'reminder'>('invoice')
   const lineItems = (invoice.line_items as LineItem[]) || []
+  const client = invoice.projects?.clients
 
   const isOverdue =
     invoice.status === 'sent' &&
@@ -71,6 +82,33 @@ export function InvoiceDetail({ invoice }: InvoiceDetailProps) {
       toast.error(error.message)
     },
   })
+
+  const handleDownloadPDF = async () => {
+    setIsGeneratingPDF(true)
+    try {
+      await downloadInvoicePDF(invoice.invoice_id, invoice.invoice_number)
+      toast.success('PDF generado correctamente')
+    } catch {
+      toast.error('Error al generar el PDF')
+    } finally {
+      setIsGeneratingPDF(false)
+    }
+  }
+
+  const handleSendEmail = async (customMessage?: string) => {
+    const result = emailModalType === 'reminder'
+      ? await sendPaymentReminderEmail(invoice.invoice_id)
+      : await sendInvoiceByEmail(invoice.invoice_id, customMessage)
+    if (result.success) {
+      queryClient.invalidateQueries({ queryKey: ['invoices'] })
+    }
+    return result
+  }
+
+  const openEmailModal = (type: 'invoice' | 'reminder') => {
+    setEmailModalType(type)
+    setShowEmailModal(true)
+  }
 
   return (
     <div className="space-y-6">
@@ -95,14 +133,32 @@ export function InvoiceDetail({ invoice }: InvoiceDetailProps) {
         </div>
 
         <div className="flex items-center gap-2">
-          {invoice.pdf_url && (
-            <Button variant="outline" asChild>
-              <a href={invoice.pdf_url} target="_blank" rel="noopener noreferrer">
-                <Download className="mr-2 h-4 w-4" />
-                Descargar PDF
-              </a>
+          {client?.email && invoice.status === 'draft' && (
+            <Button onClick={() => openEmailModal('invoice')}>
+              <Mail className="mr-2 h-4 w-4" />
+              Enviar por email
             </Button>
           )}
+
+          {client?.email && isOverdue && (
+            <Button variant="destructive" onClick={() => openEmailModal('reminder')}>
+              <Bell className="mr-2 h-4 w-4" />
+              Enviar recordatorio
+            </Button>
+          )}
+
+          <Button
+            variant="outline"
+            onClick={handleDownloadPDF}
+            disabled={isGeneratingPDF}
+          >
+            {isGeneratingPDF ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Download className="mr-2 h-4 w-4" />
+            )}
+            {isGeneratingPDF ? 'Generando...' : 'Descargar PDF'}
+          </Button>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -117,6 +173,12 @@ export function InvoiceDetail({ invoice }: InvoiceDetailProps) {
                 >
                   <Send className="mr-2 h-4 w-4" />
                   Marcar como enviada
+                </DropdownMenuItem>
+              )}
+              {client?.email && invoice.status === 'sent' && (
+                <DropdownMenuItem onClick={() => openEmailModal('invoice')}>
+                  <Mail className="mr-2 h-4 w-4" />
+                  Reenviar por email
                 </DropdownMenuItem>
               )}
               {invoice.status === 'sent' && (
@@ -262,6 +324,19 @@ export function InvoiceDetail({ invoice }: InvoiceDetailProps) {
             </p>
           </CardContent>
         </Card>
+      )}
+
+      {/* Email Modal */}
+      {client && (
+        <SendEmailModal
+          open={showEmailModal}
+          onOpenChange={setShowEmailModal}
+          type={emailModalType}
+          recipientEmail={client.email || ''}
+          recipientName={client.company_name || client.contact_name || 'Cliente'}
+          documentNumber={invoice.invoice_number}
+          onSend={handleSendEmail}
+        />
       )}
     </div>
   )

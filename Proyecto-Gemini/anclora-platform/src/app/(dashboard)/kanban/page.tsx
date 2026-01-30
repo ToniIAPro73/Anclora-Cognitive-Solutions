@@ -3,6 +3,11 @@
 import { useState, useEffect, useCallback } from 'react'
 import { DragDropContext, DropResult } from '@hello-pangea/dnd'
 import { createClient } from '@/lib/supabase/client'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Plus, Search } from 'lucide-react'
+import { Card, CardContent } from '@/components/ui/card'
+import { cn } from '@/lib/utils'
 import { KanbanColumn } from '@/components/kanban/kanban-column'
 import { ProjectFormModal } from '@/components/projects/project-form-modal'
 import { updateProjectAction } from '@/app/actions/projects'
@@ -21,6 +26,7 @@ const COLUMNS = [
 
 export default function KanbanPage() {
   const [projects, setProjects] = useState<any[]>([])
+  const [search, setSearch] = useState('')
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingProject, setEditingProject] = useState<any>(null)
   const supabase = createClient()
@@ -90,17 +96,47 @@ export default function KanbanPage() {
   }
 
   const getColumnProjects = (status: string) => {
-    return projects.filter(p => p.status === status)
+    return projects.filter(p => 
+      p.status === status &&
+      (p.project_name.toLowerCase().includes(search.toLowerCase()) ||
+       p.clients?.company_name.toLowerCase().includes(search.toLowerCase()))
+    )
   }
 
   return (
-    <div className="h-[calc(100vh-140px)] flex flex-col">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold">Tablero Kanban</h1>
-        <p className="text-muted-foreground">Gestiona el flujo de trabajo de forma visual y en tiempo real.</p>
+    <div className="space-y-8 max-w-[1600px] mx-auto pb-10">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-4xl font-extrabold tracking-tight text-[#192350] dark:text-white">Tablero Kanban</h1>
+          <p className="text-muted-foreground mt-1 font-medium">Gestiona el flujo de trabajo de forma visual y en tiempo real.</p>
+        </div>
+        <Button 
+          className="bg-primary hover:bg-primary/90 text-primary-foreground h-12 px-6 rounded-xl shadow-lg shadow-primary/20 transition-all active:scale-95"
+          onClick={() => {
+            setEditingProject(null)
+            setIsModalOpen(true)
+          }}
+        >
+          <Plus className="h-5 w-5 mr-2" />
+          Nuevo Proyecto
+        </Button>
       </div>
 
-      <div className="flex-1 overflow-x-auto pb-4">
+      <Card className="border-none shadow-none bg-muted/40 p-2 rounded-2xl">
+        <CardContent className="p-2">
+          <div className="relative flex-1 max-w-md">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input 
+              placeholder="Buscar por proyecto o cliente..." 
+              className="pl-11 bg-background border-border/50 h-12 rounded-xl focus-visible:ring-primary shadow-sm text-foreground"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      <div className="h-[calc(100vh-280px)] overflow-x-auto pb-4 custom-scrollbar">
         <DragDropContext onDragEnd={onDragEnd}>
           <div className="flex gap-x-6 h-full min-w-max">
             {COLUMNS.map((column) => (

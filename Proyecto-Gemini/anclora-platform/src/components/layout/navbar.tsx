@@ -11,7 +11,7 @@ export function Navbar() {
   const { t } = useLanguage()
 
   return (
-    <div className="flex items-center p-4 border-b border-border bg-background/80 backdrop-blur-md sticky top-0 z-50 transition-colors duration-300">
+    <div className="flex items-center p-4 border-b border-border bg-background/95 dark:bg-background/80 backdrop-blur-md sticky top-0 z-50 transition-colors duration-300 shadow-sm">
       <div className="flex w-full justify-end items-center gap-x-4">
         <div className="relative w-64 hidden sm:block">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />

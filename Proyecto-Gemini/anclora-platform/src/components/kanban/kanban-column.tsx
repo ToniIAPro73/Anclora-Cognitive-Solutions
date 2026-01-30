@@ -13,13 +13,13 @@ interface KanbanColumnProps {
 
 export function KanbanColumn({ id, title, projects, onCardClick }: KanbanColumnProps) {
   return (
-    <div className="flex flex-col w-[360px] shrink-0 bg-muted/20 dark:bg-card/10 backdrop-blur-[40px] rounded-[3rem] p-5 border border-white/10 dark:border-white/5 shadow-[0_40px_100px_-30px_rgba(0,0,0,0.1)] dark:shadow-primary/5 group/column transition-all duration-700 hover:shadow-[0_50px_120px_-20px_rgba(0,0,0,0.2)]">
-      {/* Glossy Reflection Header */}
-      <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-white/5 to-transparent rounded-t-[3rem] pointer-events-none" />
+    <div className="flex flex-col w-[350px] shrink-0 bg-[#AFD2FA] dark:bg-[#192350] backdrop-blur-xl rounded-[2.5rem] p-5 border border-white/50 dark:border-white/10 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_60px_-20px_rgba(0,0,0,0.3)] group/column transition-all duration-700 hover:shadow-[0_30px_80px_-20px_rgba(0,0,0,0.1)] relative overflow-hidden">
+      {/* Sharp Top Edge Highlight */}
+      <div className="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-white/60 to-transparent dark:via-brand-gold/20" />
       
       <div className="flex items-center justify-between mb-8 px-5 relative z-10">
         <div className="flex flex-col">
-          <h3 className="font-black text-xs text-foreground/50 uppercase tracking-[0.3em]">
+          <h3 className="font-black text-[11px] text-slate-900 dark:text-foreground/70 uppercase tracking-[0.25em]">
             {title}
           </h3>
           <p className="text-[10px] text-muted-foreground/60 font-bold mt-1">

@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { LucideIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
@@ -9,6 +10,8 @@ interface EmptyStateProps {
     label: string
     onClick: () => void
   }
+  actionLabel?: string
+  actionHref?: string
 }
 
 export function EmptyState({
@@ -16,6 +19,8 @@ export function EmptyState({
   title,
   description,
   action,
+  actionLabel,
+  actionHref,
 }: EmptyStateProps) {
   return (
     <div className="flex flex-col items-center justify-center py-16 text-center">
@@ -29,6 +34,11 @@ export function EmptyState({
       {action && (
         <Button onClick={action.onClick} className="mt-6">
           {action.label}
+        </Button>
+      )}
+      {actionLabel && actionHref && (
+        <Button asChild className="mt-6">
+          <Link href={actionHref}>{actionLabel}</Link>
         </Button>
       )}
     </div>

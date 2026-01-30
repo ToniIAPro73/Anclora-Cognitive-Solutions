@@ -95,6 +95,7 @@ export async function createClient(formData: ClientFormData): Promise<ActionResu
 
     const { data, error } = await supabase
       .from('clients')
+      // @ts-ignore - Supabase types issue
       .insert({
         company_name: validatedData.company_name,
         email: validatedData.email,
@@ -139,6 +140,7 @@ export async function updateClient(clientId: string, formData: ClientFormData): 
 
     const { data, error } = await supabase
       .from('clients')
+      // @ts-ignore - Supabase types issue
       .update({
         company_name: validatedData.company_name,
         email: validatedData.email,
