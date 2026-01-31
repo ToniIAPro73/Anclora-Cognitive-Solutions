@@ -53,7 +53,7 @@ export function useRealtimeKanban(options: UseRealtimeKanbanOptions = {}) {
         'postgres_changes',
         {
           event: 'INSERT',
-          schema: 'public',
+          schema: 'anclora',
           table: 'projects',
         },
         (payload: RealtimePostgresChangesPayload<ProjectPayload>) => {
@@ -79,7 +79,7 @@ export function useRealtimeKanban(options: UseRealtimeKanbanOptions = {}) {
         'postgres_changes',
         {
           event: 'UPDATE',
-          schema: 'public',
+          schema: 'anclora',
           table: 'projects',
         },
         (payload: RealtimePostgresChangesPayload<ProjectPayload>) => {
@@ -136,7 +136,7 @@ export function useRealtimeKanban(options: UseRealtimeKanbanOptions = {}) {
         'postgres_changes',
         {
           event: 'DELETE',
-          schema: 'public',
+          schema: 'anclora',
           table: 'projects',
         },
         (payload: RealtimePostgresChangesPayload<ProjectPayload>) => {
