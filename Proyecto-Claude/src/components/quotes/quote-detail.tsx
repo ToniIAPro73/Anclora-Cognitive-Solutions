@@ -245,7 +245,7 @@ export function QuoteDetail({ quote }: QuoteDetailProps) {
                         <p className="text-sm text-muted-foreground">
                           {service.hours}h × {formatCurrency(service.hourly_rate)}/h
                         </p>
-                        <p className="font-medium">{formatCurrency(service.total)}</p>
+                        <p className="font-medium">{formatCurrency(service.total || service.amount)}</p>
                       </div>
                     </div>
                     <p className="text-sm text-muted-foreground">
@@ -339,7 +339,7 @@ export function QuoteDetail({ quote }: QuoteDetailProps) {
           onOpenChange={setShowEmailModal}
           type="quote"
           recipientEmail={client.email || ''}
-          recipientName={client.company_name || client.contact_name || 'Cliente'}
+          recipientName={client.company_name || client.contact_person || 'Cliente'}
           documentNumber={`v${quote.version}`}
           onSend={handleSendEmail}
         />

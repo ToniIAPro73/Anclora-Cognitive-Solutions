@@ -333,7 +333,7 @@ export function InvoiceDetail({ invoice }: InvoiceDetailProps) {
           onOpenChange={setShowEmailModal}
           type={emailModalType}
           recipientEmail={client.email || ''}
-          recipientName={client.company_name || client.contact_name || 'Cliente'}
+          recipientName={client.company_name || client.contact_person || 'Cliente'}
           documentNumber={invoice.invoice_number}
           onSend={handleSendEmail}
         />

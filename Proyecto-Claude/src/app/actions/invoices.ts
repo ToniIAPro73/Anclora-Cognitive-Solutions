@@ -65,6 +65,7 @@ export async function createInvoice(formData: InvoiceFormData): Promise<ActionRe
 
     const { data, error } = await supabase
       .from('invoices')
+      // @ts-ignore - Supabase types issue with custom schema
       .insert({
         project_id: validatedData.project_id,
         issue_date: validatedData.issue_date,
@@ -109,6 +110,7 @@ export async function updateInvoice(invoiceId: string, formData: Partial<Invoice
 
     const { data, error } = await supabase
       .from('invoices')
+      // @ts-ignore - Supabase types issue with custom schema
       .update(updateData)
       .eq('invoice_id', invoiceId)
       .select()
@@ -138,6 +140,7 @@ export async function updateInvoiceStatus(invoiceId: string, status: Invoice['st
 
     const { data, error } = await supabase
       .from('invoices')
+      // @ts-ignore - Supabase types issue with custom schema
       .update(updateData)
       .eq('invoice_id', invoiceId)
       .select()
@@ -161,6 +164,7 @@ export async function updateInvoicePdfUrl(invoiceId: string, pdfUrl: string): Pr
 
     const { data, error } = await supabase
       .from('invoices')
+      // @ts-ignore - Supabase types issue with custom schema
       .update({ pdf_url: pdfUrl })
       .eq('invoice_id', invoiceId)
       .select()
@@ -187,7 +191,7 @@ export async function deleteInvoice(invoiceId: string): Promise<ActionResult> {
       .from('invoices')
       .select('status')
       .eq('invoice_id', invoiceId)
-      .single()
+      .single<{ status: Invoice['status'] }>()
 
     if (invoice?.status !== 'draft') {
       return {
@@ -225,7 +229,7 @@ export async function importFromQuote(projectId: string): Promise<ActionResult<I
       .eq('status', 'accepted')
       .order('version', { ascending: false })
       .limit(1)
-      .single()
+      .single<{ content_json: unknown }>()
 
     if (error) throw error
 

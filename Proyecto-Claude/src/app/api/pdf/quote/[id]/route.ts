@@ -15,7 +15,7 @@ export async function GET(
       .from('quotes')
       .select('*, projects(*, clients(*))')
       .eq('quote_id', params.id)
-      .single()
+      .single<QuoteWithProject>()
 
     if (error || !quote) {
       return NextResponse.json(
@@ -33,7 +33,7 @@ export async function GET(
     const projectName = quote.projects?.project_name?.replace(/[^a-zA-Z0-9]/g, '-') || 'presupuesto'
 
     // Return PDF as response
-    return new NextResponse(pdfBuffer, {
+    return new NextResponse(pdfBuffer as unknown as BodyInit, {
       status: 200,
       headers: {
         'Content-Type': 'application/pdf',

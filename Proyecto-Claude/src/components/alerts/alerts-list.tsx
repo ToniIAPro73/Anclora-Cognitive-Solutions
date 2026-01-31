@@ -62,6 +62,7 @@ import {
   FileWarning,
   UserX,
   CheckCheck,
+  RefreshCw,
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 
@@ -163,6 +164,24 @@ export function AlertsList() {
     },
   })
 
+  const generateAlertsMutation = useMutation({
+    mutationFn: async () => {
+      const response = await fetch('/api/cron/generate-alerts', { method: 'POST' })
+      if (!response.ok) {
+        const data = await response.json()
+        throw new Error(data.error || 'Error al generar alertas')
+      }
+      return response.json()
+    },
+    onSuccess: (data) => {
+      toast.success(`Análisis completado: ${data.alertsCreated} nuevas alertas creadas`)
+      queryClient.invalidateQueries({ queryKey: ['alerts'] })
+    },
+    onError: (error: Error) => {
+      toast.error(error.message)
+    },
+  })
+
   const handleDelete = () => {
     if (selectedAlertId) {
       deleteMutation.mutate(selectedAlertId)
@@ -235,14 +254,24 @@ export function AlertsList() {
           </Select>
         </div>
 
-        <Button
-          variant="outline"
-          onClick={() => markAllReadMutation.mutate()}
-          disabled={markAllReadMutation.isPending}
-        >
-          <CheckCheck className="mr-2 h-4 w-4" />
-          Marcar todas como leídas
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            onClick={() => generateAlertsMutation.mutate()}
+            disabled={generateAlertsMutation.isPending}
+          >
+            <RefreshCw className={cn("mr-2 h-4 w-4", generateAlertsMutation.isPending && "animate-spin")} />
+            {generateAlertsMutation.isPending ? 'Analizando...' : 'Generar alertas'}
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => markAllReadMutation.mutate()}
+            disabled={markAllReadMutation.isPending}
+          >
+            <CheckCheck className="mr-2 h-4 w-4" />
+            Marcar todas como leídas
+          </Button>
+        </div>
       </div>
 
       {isLoading ? (

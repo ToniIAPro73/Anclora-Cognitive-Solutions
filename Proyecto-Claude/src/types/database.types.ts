@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  public: {
+  anclora: {
     Tables: {
       clients: {
         Row: {
@@ -292,6 +292,7 @@ export interface QuoteService {
   hours: number
   hourly_rate: number
   amount: number
+  total?: number // Alias for amount, used in some components
 }
 
 export interface QuoteContent {
@@ -300,6 +301,10 @@ export interface QuoteContent {
   timeline: string
   payment_terms: string
   conclusion: string
+  validity?: string
+  subtotal?: number
+  iva?: number
+  total?: number
 }
 
 export interface InvoiceLineItem {
@@ -310,28 +315,32 @@ export interface InvoiceLineItem {
 }
 
 // Table row types shortcuts
-export type Client = Database['public']['Tables']['clients']['Row']
-export type ClientInsert = Database['public']['Tables']['clients']['Insert']
-export type ClientUpdate = Database['public']['Tables']['clients']['Update']
+export type Client = Database['anclora']['Tables']['clients']['Row']
+export type ClientInsert = Database['anclora']['Tables']['clients']['Insert']
+export type ClientUpdate = Database['anclora']['Tables']['clients']['Update']
 
-export type Project = Database['public']['Tables']['projects']['Row']
-export type ProjectInsert = Database['public']['Tables']['projects']['Insert']
-export type ProjectUpdate = Database['public']['Tables']['projects']['Update']
+export type Project = Database['anclora']['Tables']['projects']['Row']
+export type ProjectInsert = Database['anclora']['Tables']['projects']['Insert']
+export type ProjectUpdate = Database['anclora']['Tables']['projects']['Update']
 
-export type Quote = Database['public']['Tables']['quotes']['Row']
-export type QuoteInsert = Database['public']['Tables']['quotes']['Insert']
-export type QuoteUpdate = Database['public']['Tables']['quotes']['Update']
+export type Quote = Database['anclora']['Tables']['quotes']['Row']
+export type QuoteInsert = Database['anclora']['Tables']['quotes']['Insert']
+export type QuoteUpdate = Database['anclora']['Tables']['quotes']['Update']
 
-export type Invoice = Database['public']['Tables']['invoices']['Row']
-export type InvoiceInsert = Database['public']['Tables']['invoices']['Insert']
-export type InvoiceUpdate = Database['public']['Tables']['invoices']['Update']
+export type Invoice = Database['anclora']['Tables']['invoices']['Row']
+export type InvoiceInsert = Database['anclora']['Tables']['invoices']['Insert']
+export type InvoiceUpdate = Database['anclora']['Tables']['invoices']['Update']
 
-export type Alert = Database['public']['Tables']['alerts']['Row']
-export type AuditLog = Database['public']['Tables']['audit_logs']['Row']
+export type Alert = Database['anclora']['Tables']['alerts']['Row']
+export type AuditLog = Database['anclora']['Tables']['audit_logs']['Row']
 
 // Extended types with relations
 export interface ProjectWithClient extends Project {
   clients: Client
+}
+
+export interface ProjectWithClientSummary extends Project {
+  clients: { company_name: string; email: string } | null
 }
 
 export interface QuoteWithProject extends Quote {

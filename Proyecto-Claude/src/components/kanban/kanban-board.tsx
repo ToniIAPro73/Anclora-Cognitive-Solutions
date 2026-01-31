@@ -1,11 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import { DragDropContext, DropResult } from '@hello-pangea/dnd'
 import { KanbanColumn } from './kanban-column'
 import { getProjectsForKanban, updateProjectStatus } from '@/app/actions/projects'
-import { createClient } from '@/lib/supabase/client'
 import { STATUS_LABELS, canTransitionTo } from '@/lib/utils'
+import { useRealtimeKanban } from '@/hooks/use-realtime-kanban'
 import type { ProjectWithClient, ProjectStatus } from '@/types/database.types'
 import toast from 'react-hot-toast'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
@@ -32,7 +31,10 @@ const COLUMN_COLORS: Record<ProjectStatus, string> = {
 
 export function KanbanBoard() {
   const queryClient = useQueryClient()
-  const supabase = createClient()
+  const { addPendingMutation, removePendingMutation } = useRealtimeKanban({
+    enabled: true,
+    showNotifications: true,
+  })
 
   const { data: columns, isLoading } = useQuery({
     queryKey: ['kanban-projects'],
@@ -50,6 +52,9 @@ export function KanbanBoard() {
       return result.data
     },
     onMutate: async ({ projectId, newStatus }) => {
+      // Mark as pending to avoid duplicate notifications from realtime
+      addPendingMutation(projectId)
+
       await queryClient.cancelQueries({ queryKey: ['kanban-projects'] })
 
       const previousData = queryClient.getQueryData<Record<ProjectStatus, ProjectWithClient[]>>(['kanban-projects'])
@@ -76,41 +81,21 @@ export function KanbanBoard() {
 
       return { previousData }
     },
-    onError: (error, _, context) => {
+    onError: (error, variables, context) => {
+      removePendingMutation(variables.projectId)
       if (context?.previousData) {
         queryClient.setQueryData(['kanban-projects'], context.previousData)
       }
       toast.error(error.message)
     },
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
+      removePendingMutation(variables.projectId)
       toast.success('Proyecto actualizado')
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['kanban-projects'] })
     },
   })
-
-  // Realtime subscription
-  useEffect(() => {
-    const channel = supabase
-      .channel('projects-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'projects',
-        },
-        () => {
-          queryClient.invalidateQueries({ queryKey: ['kanban-projects'] })
-        }
-      )
-      .subscribe()
-
-    return () => {
-      supabase.removeChannel(channel)
-    }
-  }, [supabase, queryClient])
 
   const handleDragEnd = (result: DropResult) => {
     const { source, destination, draggableId } = result

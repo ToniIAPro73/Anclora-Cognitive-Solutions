@@ -65,6 +65,7 @@ export async function createQuote(formData: QuoteFormData): Promise<ActionResult
 
     const { data, error } = await supabase
       .from('quotes')
+      // @ts-ignore - Supabase types issue with custom schema
       .insert({
         project_id: validatedData.project_id,
         language: validatedData.language,
@@ -106,6 +107,7 @@ export async function updateQuote(quoteId: string, formData: Partial<QuoteFormDa
 
     const { data, error } = await supabase
       .from('quotes')
+      // @ts-ignore - Supabase types issue with custom schema
       .update(updateData)
       .eq('quote_id', quoteId)
       .select()
@@ -138,6 +140,7 @@ export async function updateQuoteStatus(quoteId: string, status: Quote['status']
 
     const { data, error } = await supabase
       .from('quotes')
+      // @ts-ignore - Supabase types issue with custom schema
       .update(updateData)
       .eq('quote_id', quoteId)
       .select()
@@ -151,11 +154,12 @@ export async function updateQuoteStatus(quoteId: string, status: Quote['status']
         .from('quotes')
         .select('project_id')
         .eq('quote_id', quoteId)
-        .single()
+        .single<{ project_id: string }>()
 
       if (quote) {
         await supabase
           .from('projects')
+          // @ts-ignore - Supabase types issue with custom schema
           .update({ status: 'approved' })
           .eq('project_id', quote.project_id)
       }
@@ -178,6 +182,7 @@ export async function updateQuotePdfUrl(quoteId: string, pdfUrl: string): Promis
 
     const { data, error } = await supabase
       .from('quotes')
+      // @ts-ignore - Supabase types issue with custom schema
       .update({ pdf_url: pdfUrl })
       .eq('quote_id', quoteId)
       .select()

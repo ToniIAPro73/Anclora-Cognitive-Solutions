@@ -103,8 +103,9 @@ export function QuoteWizard({ clients, projects }: QuoteWizardProps) {
         .filter((s) => s.selected)
         .map((s) => ({
           name: s.name,
-          custom_hours: s.hours,
-          description_detail: s.description_detail || undefined,
+          description: s.description_detail || s.name,
+          estimated_hours: s.hours,
+          hourly_rate: 75, // Default hourly rate
         }))
 
       const result = await generateQuoteWithAI({
@@ -141,9 +142,9 @@ export function QuoteWizard({ clients, projects }: QuoteWizardProps) {
         language: data.language,
         tone: data.tone,
         content_json: generatedContent,
-        subtotal: generatedContent.subtotal,
-        iva: generatedContent.iva,
-        total: generatedContent.total,
+        subtotal: generatedContent.subtotal || 0,
+        iva: generatedContent.iva || 0,
+        total: generatedContent.total || 0,
       })
 
       if (!result.success) throw new Error(result.error)
@@ -490,15 +491,15 @@ export function QuoteWizard({ clients, projects }: QuoteWizardProps) {
               <div className="border-t pt-4">
                 <div className="flex justify-between text-sm">
                   <span>Subtotal</span>
-                  <span>{generatedContent.subtotal.toFixed(2)}€</span>
+                  <span>{(generatedContent.subtotal ?? 0).toFixed(2)}€</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span>IVA (21%)</span>
-                  <span>{generatedContent.iva.toFixed(2)}€</span>
+                  <span>{(generatedContent.iva ?? 0).toFixed(2)}€</span>
                 </div>
                 <div className="flex justify-between font-medium text-lg mt-2">
                   <span>Total</span>
-                  <span>{generatedContent.total.toFixed(2)}€</span>
+                  <span>{(generatedContent.total ?? 0).toFixed(2)}€</span>
                 </div>
               </div>
 

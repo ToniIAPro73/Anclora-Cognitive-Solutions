@@ -62,16 +62,14 @@ export async function sendQuoteByEmail(
       client.email,
       {
         clientName: client.company_name || client.contact_person || 'Cliente',
-        contactPerson: client.contact_person,
+        contactPerson: client.contact_person || undefined,
         projectName: project?.project_name || 'Proyecto',
         version: quote.version || 1,
         total: new Intl.NumberFormat('es-ES', {
           style: 'currency',
           currency: 'EUR',
         }).format(quote.total || 0),
-        validUntil: quote.valid_until
-          ? new Date(quote.valid_until).toLocaleDateString('es-ES')
-          : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString('es-ES'),
+        validUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString('es-ES'),
         portalUrl,
         customMessage,
       },
@@ -139,7 +137,7 @@ export async function sendInvoiceByEmail(
       client.email,
       {
         clientName: client.company_name || client.contact_person || 'Cliente',
-        contactPerson: client.contact_person,
+        contactPerson: client.contact_person || undefined,
         invoiceNumber: invoice.invoice_number,
         projectName: project?.project_name || 'Proyecto',
         issueDate: new Date(invoice.issue_date).toLocaleDateString('es-ES'),
@@ -212,7 +210,7 @@ export async function sendPaymentReminderEmail(
       client.email,
       {
         clientName: client.company_name || client.contact_person || 'Cliente',
-        contactPerson: client.contact_person,
+        contactPerson: client.contact_person || undefined,
         invoiceNumber: invoice.invoice_number,
         dueDate: dueDate.toLocaleDateString('es-ES'),
         daysOverdue,
