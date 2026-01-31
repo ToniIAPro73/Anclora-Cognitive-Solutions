@@ -11,6 +11,10 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'Anclora Cognitive Solutions',
   description: 'Plataforma SaaS para consultorías de IA',
+  icons: {
+    icon: '/favicon.png',
+    apple: '/favicon.png',
+  },
 }
 
 export default function RootLayout({

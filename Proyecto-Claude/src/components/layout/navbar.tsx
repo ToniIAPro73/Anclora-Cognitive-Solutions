@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { Bell, LogOut, User, Settings } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -17,6 +18,8 @@ import { Badge } from '@/components/ui/badge'
 import { createClient } from '@/lib/supabase/client'
 import toast from 'react-hot-toast'
 import { useQuery } from '@tanstack/react-query'
+import { ThemeToggle } from '@/components/landing/theme-toggle'
+import { LanguageSelector } from '@/components/landing/language-selector'
 
 interface NavbarProps {
   user?: {
@@ -58,18 +61,25 @@ export function Navbar({ user }: NavbarProps) {
   }
 
   return (
-    <header className="sticky top-0 z-40 border-b bg-background">
+    <header className="sticky top-0 z-40 border-b border-border/50 bg-card/80 backdrop-blur-sm">
       <div className="flex h-16 items-center justify-between px-6">
-        <Link href="/dashboard" className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold">
-            A
-          </div>
-          <span className="hidden font-semibold sm:inline-block">
+        <Link href="/dashboard" className="flex items-center gap-2 group">
+          <Image
+            src="/logo.png"
+            alt="Anclora"
+            width={36}
+            height={36}
+            className="rounded-full ring-2 ring-transparent group-hover:ring-accent/30 transition-all"
+          />
+          <span className="hidden font-semibold sm:inline-block text-foreground">
             Anclora
           </span>
         </Link>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
+          <LanguageSelector />
+          <ThemeToggle />
+
           <Link href="/dashboard/alerts">
             <Button variant="ghost" size="icon" className="relative">
               <Bell className="h-5 w-5" />

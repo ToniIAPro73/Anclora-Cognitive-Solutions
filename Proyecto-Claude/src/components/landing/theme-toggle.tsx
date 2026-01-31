@@ -12,20 +12,21 @@ export function ThemeToggle() {
       onClick={toggleTheme}
       className={cn(
         'relative flex h-9 w-9 items-center justify-center rounded-full',
-        'bg-muted/50 hover:bg-muted transition-all duration-300',
-        'focus:outline-none focus:ring-2 focus:ring-primary/50'
+        'bg-secondary/50 hover:bg-secondary transition-all duration-300',
+        'focus:outline-none focus:ring-2 focus:ring-accent/50',
+        'border border-border/50 hover:border-accent/30'
       )}
       aria-label={theme === 'light' ? 'Activar modo oscuro' : 'Activar modo claro'}
     >
       <Sun
         className={cn(
-          'h-4 w-4 transition-all duration-300',
+          'h-4 w-4 transition-all duration-300 text-accent',
           theme === 'light' ? 'rotate-0 scale-100 opacity-100' : 'rotate-90 scale-0 opacity-0'
         )}
       />
       <Moon
         className={cn(
-          'absolute h-4 w-4 transition-all duration-300',
+          'absolute h-4 w-4 transition-all duration-300 text-accent',
           theme === 'dark' ? 'rotate-0 scale-100 opacity-100' : '-rotate-90 scale-0 opacity-0'
         )}
       />

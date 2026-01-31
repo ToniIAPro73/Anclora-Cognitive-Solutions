@@ -30,10 +30,6 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
 
   const t = translations[locale]
 
-  if (!mounted) {
-    return <>{children}</>
-  }
-
   return (
     <LocaleContext.Provider value={{ locale, setLocale, t }}>
       {children}

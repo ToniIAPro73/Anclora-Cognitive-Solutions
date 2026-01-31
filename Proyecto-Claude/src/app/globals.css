@@ -4,63 +4,132 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    /* ============================================
+       ANCLORA COGNITIVE SOLUTIONS - LIGHT MODE
+       Brand Colors:
+       - Dark Blue: #192350 (primary)
+       - Light Blue: #AFD2FA (secondary/accent)
+       - Gold: #D4AF37 (accent highlights)
+       - Off-White: #F5F5F0 (background)
+       ============================================ */
+
+    /* Base colors */
+    --background: 60 20% 97%; /* Soft off-white #F7F7F3 */
+    --foreground: 227 52% 21%; /* Dark blue #192350 */
+
+    /* Card/Surface colors */
+    --card: 0 0% 100%; /* Pure white for cards */
+    --card-foreground: 227 52% 21%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 173 80% 40%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 173 80% 40%;
+    --popover-foreground: 227 52% 21%;
+
+    /* Primary - Dark Blue for main actions */
+    --primary: 227 52% 21%; /* #192350 */
+    --primary-foreground: 0 0% 100%; /* White text on dark blue */
+
+    /* Secondary - Light Blue for secondary elements */
+    --secondary: 212 60% 92%; /* Lighter version of #AFD2FA */
+    --secondary-foreground: 227 52% 21%;
+
+    /* Muted - Subtle backgrounds and text */
+    --muted: 212 30% 94%;
+    --muted-foreground: 227 25% 45%; /* Readable gray-blue */
+
+    /* Accent - Gold for highlights and CTAs */
+    --accent: 43 74% 49%; /* #D4AF37 gold, slightly more vibrant */
+    --accent-foreground: 227 52% 15%; /* Dark text on gold */
+
+    /* Destructive */
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Border and Input */
+    --border: 212 25% 87%;
+    --input: 212 25% 87%;
+    --ring: 227 52% 21%; /* Dark blue focus ring */
     --radius: 0.5rem;
 
-    /* Kanban column colors */
-    --kanban-backlog: 215 16% 47%;
-    --kanban-proposal: 38 92% 50%;
-    --kanban-approved: 142 71% 45%;
-    --kanban-in-progress: 217 91% 60%;
-    --kanban-testing: 262 83% 58%;
-    --kanban-completed: 142 76% 36%;
-    --kanban-cancelled: 0 84% 60%;
+    /* Brand specific custom properties */
+    --gold: 43 74% 49%;
+    --light-blue: 212 88% 83%;
+    --dark-blue: 227 52% 21%;
+
+    /* Kanban column colors - optimized for light mode */
+    --kanban-backlog: 220 15% 55%;
+    --kanban-proposal: 43 74% 49%;
+    --kanban-approved: 152 60% 40%;
+    --kanban-in-progress: 212 80% 55%;
+    --kanban-testing: 270 60% 55%;
+    --kanban-completed: 152 70% 35%;
+    --kanban-cancelled: 0 65% 55%;
 
     /* Priority colors */
-    --priority-low: 215 16% 47%;
-    --priority-medium: 217 91% 60%;
-    --priority-high: 38 92% 50%;
-    --priority-urgent: 0 84% 60%;
+    --priority-low: 220 15% 55%;
+    --priority-medium: 212 80% 55%;
+    --priority-high: 43 74% 49%;
+    --priority-urgent: 0 72% 51%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 173 80% 40%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 173 80% 40%;
+    /* ============================================
+       ANCLORA COGNITIVE SOLUTIONS - DARK MODE
+       Inverted palette maintaining brand identity
+       ============================================ */
+
+    /* Base colors - Deep blue background */
+    --background: 227 55% 10%; /* Very dark blue #0D1526 */
+    --foreground: 60 15% 95%; /* Off-white #F4F4F0 */
+
+    /* Card/Surface colors - Slightly elevated */
+    --card: 227 50% 14%; /* Elevated surface #141D33 */
+    --card-foreground: 60 15% 95%;
+    --popover: 227 50% 16%;
+    --popover-foreground: 60 15% 95%;
+
+    /* Primary - Light Blue for main actions in dark mode */
+    --primary: 212 75% 65%; /* Brighter light blue for visibility */
+    --primary-foreground: 227 55% 10%; /* Dark text on light buttons */
+
+    /* Secondary - Subtle blue surface */
+    --secondary: 227 45% 20%;
+    --secondary-foreground: 60 15% 90%;
+
+    /* Muted - Darker subtle elements */
+    --muted: 227 40% 18%;
+    --muted-foreground: 212 30% 65%; /* Readable muted text */
+
+    /* Accent - Gold remains vibrant */
+    --accent: 43 74% 55%; /* Slightly brighter gold for dark mode */
+    --accent-foreground: 227 55% 10%;
+
+    /* Destructive */
+    --destructive: 0 65% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Border and Input - Visible but subtle */
+    --border: 227 40% 25%;
+    --input: 227 40% 22%;
+    --ring: 212 75% 65%; /* Light blue focus ring */
+
+    /* Brand specific custom properties */
+    --gold: 43 74% 55%;
+    --light-blue: 212 75% 65%;
+    --dark-blue: 227 52% 21%;
+
+    /* Kanban column colors - optimized for dark mode */
+    --kanban-backlog: 220 20% 50%;
+    --kanban-proposal: 43 74% 55%;
+    --kanban-approved: 152 55% 45%;
+    --kanban-in-progress: 212 75% 60%;
+    --kanban-testing: 270 55% 60%;
+    --kanban-completed: 152 65% 40%;
+    --kanban-cancelled: 0 60% 55%;
+
+    /* Priority colors - brighter for dark mode */
+    --priority-low: 220 20% 50%;
+    --priority-medium: 212 75% 60%;
+    --priority-high: 43 74% 55%;
+    --priority-urgent: 0 65% 55%;
   }
 }
 
@@ -128,4 +197,42 @@
   .no-print {
     display: none !important;
   }
+}
+
+/* Brand color utilities */
+.text-gold {
+  color: hsl(var(--gold));
+}
+
+.bg-gold {
+  background-color: hsl(var(--gold));
+}
+
+.border-gold {
+  border-color: hsl(var(--gold));
+}
+
+.text-light-blue {
+  color: hsl(var(--light-blue));
+}
+
+.bg-light-blue {
+  background-color: hsl(var(--light-blue));
+}
+
+.text-dark-blue {
+  color: hsl(var(--dark-blue));
+}
+
+.bg-dark-blue {
+  background-color: hsl(var(--dark-blue));
+}
+
+/* Gradient utilities with brand colors */
+.gradient-gold {
+  background: linear-gradient(135deg, hsl(var(--gold)) 0%, hsl(43 74% 60%) 100%);
+}
+
+.gradient-blue {
+  background: linear-gradient(135deg, hsl(var(--dark-blue)) 0%, hsl(var(--light-blue)) 100%);
 }

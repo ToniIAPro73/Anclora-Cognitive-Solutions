@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import {
   LayoutDashboard,
   Users,
@@ -8,8 +9,7 @@ import {
   FileText,
   Kanban,
   Receipt,
-  ArrowRight,
-  Sparkles
+  ArrowRight
 } from 'lucide-react'
 import { useLocale } from '@/components/providers/locale-provider'
 import { ThemeToggle } from './theme-toggle'
@@ -35,17 +35,23 @@ export function LandingPage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <div className="flex items-center gap-2">
-              <div className="relative w-8 h-8">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary to-primary/60 rounded-lg rotate-6" />
-                <div className="absolute inset-0 bg-gradient-to-br from-primary to-primary/80 rounded-lg flex items-center justify-center">
-                  <Sparkles className="h-4 w-4 text-primary-foreground" />
-                </div>
+            <Link href="/" className="flex items-center gap-3">
+              <Image
+                src="/logo.png"
+                alt="Anclora Cognitive Solutions"
+                width={40}
+                height={40}
+                className="rounded-full"
+              />
+              <div className="hidden sm:flex flex-col">
+                <span className="text-lg font-bold text-foreground leading-tight">
+                  Anclora
+                </span>
+                <span className="text-xs text-muted-foreground leading-tight">
+                  Cognitive Solutions
+                </span>
               </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
-                Anclora
-              </span>
-            </div>
+            </Link>
 
             {/* Nav */}
             <nav className="hidden md:flex items-center gap-8">
@@ -85,7 +91,7 @@ export function LandingPage() {
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight">
               <span className="text-foreground">{t.hero.title}</span>
               <br />
-              <span className="bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
                 {t.hero.titleHighlight}
               </span>
             </h1>
@@ -99,9 +105,9 @@ export function LandingPage() {
                 href="/login"
                 className={cn(
                   'group flex items-center gap-2 px-8 py-4 rounded-full',
-                  'bg-primary text-primary-foreground font-semibold',
-                  'hover:bg-primary/90 transition-all duration-300',
-                  'shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30',
+                  'bg-accent text-accent-foreground font-semibold',
+                  'hover:bg-accent/90 transition-all duration-300',
+                  'shadow-lg shadow-accent/30 hover:shadow-xl hover:shadow-accent/40',
                   'hover:-translate-y-0.5'
                 )}
               >
@@ -110,12 +116,12 @@ export function LandingPage() {
               </Link>
 
               <Link
-                href="/client"
+                href="/portal/login"
                 className={cn(
                   'flex items-center gap-2 px-8 py-4 rounded-full',
-                  'bg-muted text-foreground font-semibold',
-                  'hover:bg-muted/80 transition-all duration-300',
-                  'border border-border hover:border-border/80'
+                  'bg-primary text-primary-foreground font-semibold',
+                  'hover:bg-primary/90 transition-all duration-300',
+                  'shadow-md hover:shadow-lg'
                 )}
               >
                 {t.hero.ctaClient}
@@ -143,15 +149,15 @@ export function LandingPage() {
                 key={index}
                 className={cn(
                   'group relative p-6 rounded-2xl',
-                  'bg-background border border-border/50',
-                  'hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5',
+                  'bg-card border border-border/50',
+                  'hover:border-accent/40 hover:shadow-lg hover:shadow-accent/10',
                   'transition-all duration-300'
                 )}
               >
                 <div className={cn(
                   'inline-flex items-center justify-center w-12 h-12 rounded-xl mb-4',
                   'bg-primary/10 text-primary',
-                  'group-hover:bg-primary group-hover:text-primary-foreground',
+                  'group-hover:bg-accent group-hover:text-accent-foreground',
                   'transition-all duration-300'
                 )}>
                   <feature.icon className="h-6 w-6" />
@@ -194,9 +200,9 @@ export function LandingPage() {
               href="/login"
               className={cn(
                 'inline-flex items-center gap-2 mt-8 px-8 py-4 rounded-full',
-                'bg-primary text-primary-foreground font-semibold',
-                'hover:bg-primary/90 transition-all duration-300',
-                'shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30'
+                'bg-accent text-accent-foreground font-semibold',
+                'hover:bg-accent/90 transition-all duration-300',
+                'shadow-lg shadow-accent/30 hover:shadow-xl hover:shadow-accent/40'
               )}
             >
               {t.cta.button}

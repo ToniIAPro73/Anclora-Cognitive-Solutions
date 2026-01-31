@@ -62,7 +62,7 @@ export function Sidebar() {
   return (
     <aside
       className={cn(
-        'relative flex flex-col border-r bg-background transition-all duration-300',
+        'relative flex flex-col border-r border-border/50 bg-card/50 transition-all duration-300',
         collapsed ? 'w-16' : 'w-64'
       )}
     >
@@ -74,14 +74,17 @@ export function Sidebar() {
               key={item.name}
               href={item.href}
               className={cn(
-                'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+                'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200',
                 isActive
-                  ? 'bg-primary text-primary-foreground'
-                  : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                  ? 'bg-primary text-primary-foreground shadow-sm'
+                  : 'text-muted-foreground hover:bg-secondary/50 hover:text-foreground'
               )}
               title={collapsed ? item.name : undefined}
             >
-              <item.icon className="h-5 w-5 flex-shrink-0" />
+              <item.icon className={cn(
+                'h-5 w-5 flex-shrink-0',
+                isActive && 'text-primary-foreground'
+              )} />
               {!collapsed && <span>{item.name}</span>}
             </Link>
           )
@@ -91,7 +94,7 @@ export function Sidebar() {
       <Button
         variant="ghost"
         size="icon"
-        className="absolute -right-3 top-6 z-10 h-6 w-6 rounded-full border bg-background shadow-sm"
+        className="absolute -right-3 top-6 z-10 h-6 w-6 rounded-full border border-border bg-card shadow-sm hover:bg-secondary hover:border-accent/30 transition-all"
         onClick={() => setCollapsed(!collapsed)}
       >
         {collapsed ? (
