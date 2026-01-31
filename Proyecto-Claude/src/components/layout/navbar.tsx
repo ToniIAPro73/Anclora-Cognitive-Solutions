@@ -31,13 +31,19 @@ export function Navbar({ user }: NavbarProps) {
   const { data: unreadAlerts } = useQuery({
     queryKey: ['unread-alerts-count'],
     queryFn: async () => {
-      const { count } = await supabase
-        .from('alerts')
-        .select('*', { count: 'exact', head: true })
-        .eq('is_read', false)
-      return count || 0
+      try {
+        const { count, error } = await supabase
+          .from('alerts')
+          .select('*', { count: 'exact', head: true })
+          .eq('is_read', false)
+        if (error) return 0
+        return count || 0
+      } catch {
+        return 0
+      }
     },
     refetchInterval: 30000,
+    retry: false,
   })
 
   const handleLogout = async () => {

@@ -3,6 +3,8 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import { Toaster } from 'react-hot-toast'
 import { QueryProvider } from '@/components/providers/query-provider'
+import { ThemeProvider } from '@/components/providers/theme-provider'
+import { LocaleProvider } from '@/components/providers/locale-provider'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -19,9 +21,11 @@ export default function RootLayout({
   return (
     <html lang="es" suppressHydrationWarning>
       <body className={inter.className}>
-        <QueryProvider>
-          {children}
-          <Toaster
+        <ThemeProvider>
+          <LocaleProvider>
+            <QueryProvider>
+              {children}
+              <Toaster
             position="top-right"
             toastOptions={{
               duration: 3000,
@@ -44,7 +48,9 @@ export default function RootLayout({
               },
             }}
           />
-        </QueryProvider>
+            </QueryProvider>
+          </LocaleProvider>
+        </ThemeProvider>
       </body>
     </html>
   )
