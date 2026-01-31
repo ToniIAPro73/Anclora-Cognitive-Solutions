@@ -68,7 +68,10 @@ export function Sidebar() {
     >
       <nav className="flex-1 space-y-1 p-4">
         {navigation.map((item) => {
-          const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
+          // Fix: Dashboard should only be active when exactly at /dashboard
+          const isActive = item.href === '/dashboard'
+            ? pathname === '/dashboard'
+            : pathname === item.href || pathname.startsWith(item.href + '/')
           return (
             <Link
               key={item.name}
@@ -76,14 +79,14 @@ export function Sidebar() {
               className={cn(
                 'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200',
                 isActive
-                  ? 'bg-primary text-primary-foreground shadow-sm'
+                  ? 'bg-accent text-accent-foreground shadow-sm'
                   : 'text-muted-foreground hover:bg-secondary/50 hover:text-foreground'
               )}
               title={collapsed ? item.name : undefined}
             >
               <item.icon className={cn(
                 'h-5 w-5 flex-shrink-0',
-                isActive && 'text-primary-foreground'
+                isActive && 'text-accent-foreground'
               )} />
               {!collapsed && <span>{item.name}</span>}
             </Link>

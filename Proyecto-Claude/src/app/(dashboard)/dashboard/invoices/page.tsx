@@ -13,7 +13,7 @@ export default function InvoicesPage() {
         title="Facturas"
         description="Gestiona todas tus facturas"
         actions={
-          <Button asChild>
+          <Button variant="accent" asChild>
             <Link href="/dashboard/invoices/new">
               <Plus className="mr-2 h-4 w-4" />
               Nueva Factura

@@ -1,6 +1,7 @@
 import { Suspense } from 'react'
 import { PageContainer, PageHeader } from '@/components/layout/page-container'
 import { AlertsList } from '@/components/alerts/alerts-list'
+import { AlertFormModal } from '@/components/alerts/alert-form-modal'
 import { Skeleton } from '@/components/ui/skeleton'
 
 export default function AlertsPage() {
@@ -9,6 +10,7 @@ export default function AlertsPage() {
       <PageHeader
         title="Alertas"
         description="Notificaciones y alertas del sistema"
+        actions={<AlertFormModal />}
       />
 
       <Suspense fallback={<AlertsSkeleton />}>
