@@ -14,11 +14,19 @@ interface KanbanColumnProps {
 
 export function KanbanColumn({ id, title, color, projects }: KanbanColumnProps) {
   return (
-    <div className="kanban-column flex flex-col">
-      <div className="mb-4 flex items-center gap-2">
-        <div className={cn('h-3 w-3 rounded-full', color)} />
-        <h3 className="font-semibold">{title}</h3>
-        <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">
+    <div className="kanban-column flex flex-col animate-fade-in-up">
+      {/* Column Header */}
+      <div className="kanban-column-header mb-4 flex items-center justify-between rounded-xl bg-card border border-border/50 px-4 py-3 shadow-sm">
+        <div className="flex items-center gap-3">
+          <div className={cn(
+            'h-3 w-3 rounded-full ring-4 ring-offset-2 ring-offset-card transition-all duration-300',
+            color
+          )}
+          style={{ boxShadow: `0 0 10px currentColor` }}
+          />
+          <h3 className="font-semibold text-foreground">{title}</h3>
+        </div>
+        <span className="flex items-center justify-center min-w-[28px] h-7 rounded-full bg-accent/10 px-2 text-sm font-medium text-accent transition-all duration-300 hover:bg-accent hover:text-accent-foreground">
           {projects.length}
         </span>
       </div>
@@ -29,10 +37,11 @@ export function KanbanColumn({ id, title, color, projects }: KanbanColumnProps) 
             ref={provided.innerRef}
             {...provided.droppableProps}
             className={cn(
-              'flex-1 space-y-3 rounded-lg border-2 border-dashed p-3 min-h-[200px] transition-colors',
+              'flex-1 space-y-3 rounded-xl p-3 min-h-[200px] transition-all duration-300',
+              'border-2 border-dashed',
               snapshot.isDraggingOver
-                ? 'border-primary bg-primary/5'
-                : 'border-transparent bg-muted/30'
+                ? 'kanban-drop-zone-active border-accent/60 bg-accent/10 scale-[1.01]'
+                : 'border-border/30 bg-muted/20 hover:bg-muted/30'
             )}
           >
             {projects.map((project, index) => (
@@ -43,6 +52,11 @@ export function KanbanColumn({ id, title, color, projects }: KanbanColumnProps) 
               />
             ))}
             {provided.placeholder}
+            {projects.length === 0 && !snapshot.isDraggingOver && (
+              <div className="flex flex-col items-center justify-center h-24 text-muted-foreground/50">
+                <p className="text-sm">Sin proyectos</p>
+              </div>
+            )}
           </div>
         )}
       </Droppable>

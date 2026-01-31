@@ -118,13 +118,26 @@ export function KanbanBoard() {
   }
 
   if (isLoading || !columns) {
-    return null
+    return (
+      <div className="flex gap-6 overflow-x-auto p-6 pb-8">
+        {COLUMN_ORDER.map((_, index) => (
+          <div key={index} className="kanban-column flex flex-col animate-fade-in" style={{ animationDelay: `${index * 100}ms` }}>
+            <div className="skeleton-premium h-14 mb-4 rounded-xl" />
+            <div className="flex-1 space-y-3 rounded-xl bg-muted/20 p-3 min-h-[200px]">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="skeleton-premium h-32 rounded-lg" />
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    )
   }
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
-      <div className="flex gap-4 overflow-x-auto p-6 pb-8">
-        {COLUMN_ORDER.map((status) => (
+      <div className="flex gap-6 overflow-x-auto p-6 pb-8 stagger-children">
+        {COLUMN_ORDER.map((status, index) => (
           <KanbanColumn
             key={status}
             id={status}

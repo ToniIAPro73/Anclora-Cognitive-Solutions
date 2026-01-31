@@ -9,8 +9,8 @@ interface PageContainerProps {
 
 export function PageContainer({ children, className }: PageContainerProps) {
   return (
-    <div className={cn('flex-1 overflow-auto p-6', className)}>
-      <div className="mx-auto max-w-7xl">{children}</div>
+    <div className={cn('flex-1 overflow-auto p-6 page-transition', className)}>
+      <div className="mx-auto max-w-7xl animate-fade-in-up">{children}</div>
     </div>
   )
 }
@@ -29,18 +29,20 @@ export function PageHeader({ title, description, actions, backHref }: PageHeader
         {backHref && (
           <Link
             href={backHref}
-            className="mb-2 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+            className="group mb-3 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-accent transition-colors duration-200"
           >
-            <ArrowLeft className="h-4 w-4" />
-            Volver
+            <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+            <span>Volver</span>
           </Link>
         )}
-        <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
+        <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
+          {title}
+        </h1>
         {description && (
           <p className="mt-2 text-muted-foreground">{description}</p>
         )}
       </div>
-      {actions && <div className="flex gap-2">{actions}</div>}
+      {actions && <div className="flex gap-2 animate-fade-in">{actions}</div>}
     </div>
   )
 }
