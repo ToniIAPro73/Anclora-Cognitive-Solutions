@@ -73,8 +73,7 @@ export default function ClientQuotesPage({ params }: ClientQuotesPageProps) {
     // Mark as viewed if not already
     if (quote.status === 'sent') {
       const supabase = createClient()
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await (supabase.from('quotes') as any)
+      await (supabase.from('quotes') as ReturnType<typeof supabase.from>)
         .update({ status: 'viewed', viewed_at: new Date().toISOString() })
         .eq('quote_id', quote.quote_id)
 

@@ -1,7 +1,7 @@
 import { useRef, useCallback, useEffect } from 'react'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function useDebouncedCallback<T extends (...args: any[]) => void>(
+// Generic callback type - using any[] for args to allow proper type inference
+export function useDebouncedCallback<T extends (...args: Parameters<T>) => void>(
   callback: T,
   delay: number
 ): T {
