@@ -21,10 +21,10 @@ export const projectSchema = z.object({
     'cancelled',
   ]).default('backlog'),
   budget: z
-    .number()
-    .min(0, 'El presupuesto no puede ser negativo')
-    .optional()
-    .nullable(),
+    .preprocess(
+      (val) => (val === '' || Number.isNaN(val) ? undefined : val),
+      z.number().min(0, 'El presupuesto no puede ser negativo').optional().nullable()
+    ),
   deadline: z
     .string()
     .optional()

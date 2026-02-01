@@ -5,6 +5,7 @@ import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { projectSchema, type ProjectFormData, type ProjectFilterParams } from '@/lib/validations/project.schema'
 import { canTransitionTo } from '@/lib/utils'
 import type { Project, ProjectWithClient, ProjectWithClientSummary, ProjectStatus } from '@/types/database.types'
+import { ZodError } from 'zod'
 
 export interface ActionResult<T = void> {
   success: boolean
@@ -144,6 +145,13 @@ export async function createProject(formData: ProjectFormData): Promise<ActionRe
     revalidatePath('/dashboard/kanban')
     return { success: true, data }
   } catch (error) {
+    if (error instanceof ZodError) {
+      const firstError = error.errors[0]
+      return {
+        success: false,
+        error: firstError?.message || 'Error de validación',
+      }
+    }
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Error al crear proyecto',

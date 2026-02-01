@@ -34,9 +34,11 @@ interface ClientFormModalProps {
   client?: Client
   open?: boolean
   onOpenChange?: (open: boolean) => void
+  /** Callback called when a new client is created (only for create, not edit) */
+  onClientCreated?: (client: Client) => void
 }
 
-export function ClientFormModal({ client, open, onOpenChange }: ClientFormModalProps) {
+export function ClientFormModal({ client, open, onOpenChange, onClientCreated }: ClientFormModalProps) {
   const [isOpen, setIsOpen] = useState(open || false)
   const [isLoading, setIsLoading] = useState(false)
   const queryClient = useQueryClient()
@@ -85,6 +87,12 @@ export function ClientFormModal({ client, open, onOpenChange }: ClientFormModalP
 
     toast.success(client?.client_id ? 'Cliente actualizado' : 'Cliente creado')
     queryClient.invalidateQueries({ queryKey: ['clients'] })
+
+    // Call callback with created client (only for new clients)
+    if (!client?.client_id && result.data && onClientCreated) {
+      onClientCreated(result.data)
+    }
+
     reset()
     setDialogOpen(false)
     setIsLoading(false)

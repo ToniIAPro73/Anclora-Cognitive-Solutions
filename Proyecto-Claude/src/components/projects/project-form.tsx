@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -16,11 +17,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
+import { ClientFormModal } from '@/components/clients/client-form-modal'
 import { createProject, updateProject } from '@/app/actions/projects'
 import { projectSchema, type ProjectFormData } from '@/lib/validations/project.schema'
 import { STATUS_LABELS, PRIORITY_LABELS } from '@/lib/utils'
-import type { ProjectWithClient, ProjectStatus, ProjectPriority } from '@/types/database.types'
-import { Loader2 } from 'lucide-react'
+import type { ProjectWithClient, ProjectStatus, ProjectPriority, Client } from '@/types/database.types'
+import { Loader2, UserPlus } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 interface ProjectFormProps {
@@ -29,8 +37,10 @@ interface ProjectFormProps {
   isEditing?: boolean
 }
 
-export function ProjectForm({ project, clients, isEditing }: ProjectFormProps) {
+export function ProjectForm({ project, clients: initialClients, isEditing }: ProjectFormProps) {
   const router = useRouter()
+  const [clients, setClients] = useState(initialClients)
+  const [isClientModalOpen, setIsClientModalOpen] = useState(false)
 
   const {
     register,
@@ -95,7 +105,15 @@ export function ProjectForm({ project, clients, isEditing }: ProjectFormProps) {
 
   const isLoading = createMutation.isPending || updateMutation.isPending
 
+  const handleClientCreated = (newClient: Client) => {
+    // Add the new client to the local list
+    setClients((prev) => [...prev, { client_id: newClient.client_id, company_name: newClient.company_name }])
+    // Auto-select the new client
+    setValue('client_id', newClient.client_id, { shouldValidate: true, shouldDirty: true })
+  }
+
   return (
+    <>
     <form onSubmit={handleSubmit(onSubmit)}>
       <Card>
         <CardHeader>
@@ -116,21 +134,40 @@ export function ProjectForm({ project, clients, isEditing }: ProjectFormProps) {
 
           <div className="space-y-2">
             <Label htmlFor="client_id">Cliente *</Label>
-            <Select
-              value={selectedClientId}
-              onValueChange={(value) => setValue('client_id', value)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Selecciona un cliente" />
-              </SelectTrigger>
-              <SelectContent>
-                {clients.map((client) => (
-                  <SelectItem key={client.client_id} value={client.client_id}>
-                    {client.company_name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="flex gap-2">
+              <Select
+                value={selectedClientId}
+                onValueChange={(value) => setValue('client_id', value)}
+              >
+                <SelectTrigger className="flex-1">
+                  <SelectValue placeholder="Selecciona un cliente" />
+                </SelectTrigger>
+                <SelectContent className="max-h-60">
+                  {clients.map((client) => (
+                    <SelectItem key={client.client_id} value={client.client_id}>
+                      {client.company_name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      onClick={() => setIsClientModalOpen(true)}
+                    >
+                      <UserPlus className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Crear nuevo cliente</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
             {errors.client_id && (
               <p className="text-sm text-red-500">{errors.client_id.message}</p>
             )}
@@ -240,5 +277,12 @@ export function ProjectForm({ project, clients, isEditing }: ProjectFormProps) {
         </CardFooter>
       </Card>
     </form>
+
+    <ClientFormModal
+      open={isClientModalOpen}
+      onOpenChange={setIsClientModalOpen}
+      onClientCreated={handleClientCreated}
+    />
+    </>
   )
 }

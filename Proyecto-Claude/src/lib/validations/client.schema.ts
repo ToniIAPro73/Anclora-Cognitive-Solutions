@@ -1,7 +1,10 @@
 import { z } from 'zod'
 
-// Spanish NIF/CIF regex validation
-const nifCifRegex = /^[XYZ]?\d{7,8}[A-Z]$/i
+// Spanish NIF/CIF validation
+// NIF: 8 digits + letter (e.g., 12345678A)
+// NIE: X/Y/Z + 7 digits + letter (e.g., X1234567A)
+// CIF: letter (A-H, J-N, P-S, U-W) + 7 digits + optional control digit/letter (e.g., B7985939 or B79859390)
+const nifCifRegex = /^([XYZ]\d{7}[A-Z]|\d{8}[A-Z]|[A-HJ-NP-SUVW]\d{7}[0-9A-J]?)$/i
 
 // E.164 phone format
 const phoneRegex = /^\+[1-9]\d{1,14}$/
