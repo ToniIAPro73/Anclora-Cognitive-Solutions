@@ -68,7 +68,20 @@ export function VerifactuConfigForm({ initialConfig }: VerifactuConfigFormProps)
   const entorno = watch('entorno')
 
   const updateMutation = useMutation({
-    mutationFn: updateVerifactuConfig,
+    mutationFn: async (data: VerifactuConfigFormData) => {
+      // Serialize to plain object to avoid "Classes or null prototypes" error
+      const plainData = {
+        nif_emisor: data.nif_emisor,
+        nombre_emisor: data.nombre_emisor,
+        entorno: data.entorno,
+        enabled: data.enabled,
+      }
+      const result = await updateVerifactuConfig(plainData)
+      if (!result.success) {
+        throw new Error(result.error || 'Error al guardar configuración')
+      }
+      return result.data
+    },
     onSuccess: () => {
       toast.success('Configuración guardada correctamente')
       queryClient.invalidateQueries({ queryKey: ['verifactu-config'] })
@@ -79,14 +92,7 @@ export function VerifactuConfigForm({ initialConfig }: VerifactuConfigFormProps)
   })
 
   const onSubmit = (data: VerifactuConfigFormData) => {
-    // Serialize to plain object to avoid "Classes or null prototypes" error
-    const plainData = {
-      nif_emisor: data.nif_emisor,
-      nombre_emisor: data.nombre_emisor,
-      entorno: data.entorno,
-      enabled: data.enabled,
-    }
-    updateMutation.mutate(plainData)
+    updateMutation.mutate(data)
   }
 
   return (

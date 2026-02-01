@@ -7,8 +7,8 @@
     /* ============================================
        ANCLORA COGNITIVE SOLUTIONS - LIGHT MODE
        Brand Colors:
-       - Dark Blue: #192350 (primary)
-       - Light Blue: #AFD2FA (accent - buttons, active states)
+       - Light Blue: #3B82F6 (primary - buttons)
+       - Dark Blue: #192350 (accent - highlights)
        - Gold: #D4AF37 (reserved for dark mode)
        - Off-White: #F5F5F0 (background)
        ============================================ */
@@ -23,9 +23,9 @@
     --popover: 0 0% 100%;
     --popover-foreground: 227 52% 21%;
 
-    /* Primary - Dark Blue for main actions */
-    --primary: 227 52% 21%; /* #192350 */
-    --primary-foreground: 0 0% 100%; /* White text on dark blue */
+    /* Primary - Light Blue for main actions in light mode */
+    --primary: 212 75% 50%; /* Light blue for buttons */
+    --primary-foreground: 0 0% 100%; /* White text on blue */
 
     /* Secondary - Light Blue for secondary elements */
     --secondary: 212 60% 92%; /* Lighter version of #AFD2FA */
@@ -35,9 +35,9 @@
     --muted: 212 30% 94%;
     --muted-foreground: 227 25% 45%; /* Readable gray-blue */
 
-    /* Accent - Light Blue for highlights and CTAs in light mode */
-    --accent: 212 70% 50%; /* Vibrant light blue for light mode */
-    --accent-foreground: 0 0% 100%; /* White text on blue */
+    /* Accent - Dark Blue for highlights in light mode */
+    --accent: 227 52% 21%; /* Dark blue for accents */
+    --accent-foreground: 0 0% 100%; /* White text on dark blue */
 
     /* Destructive */
     --destructive: 0 72% 51%;
@@ -46,7 +46,7 @@
     /* Border and Input */
     --border: 212 25% 87%;
     --input: 212 25% 87%;
-    --ring: 227 52% 21%; /* Dark blue focus ring */
+    --ring: 212 75% 50%; /* Light blue focus ring */
     --radius: 0.5rem;
 
     /* Brand specific custom properties */
@@ -73,7 +73,10 @@
   .dark {
     /* ============================================
        ANCLORA COGNITIVE SOLUTIONS - DARK MODE
-       Inverted palette maintaining brand identity
+       Brand Colors:
+       - Gold: #D4AF37 (primary - buttons)
+       - Light Blue: #6BB5F6 (accent - highlights)
+       - Deep Blue: #0D1526 (background)
        ============================================ */
 
     /* Base colors - Deep blue background */
@@ -86,9 +89,9 @@
     --popover: 227 50% 16%;
     --popover-foreground: 60 15% 95%;
 
-    /* Primary - Light Blue for main actions in dark mode */
-    --primary: 212 75% 65%; /* Brighter light blue for visibility */
-    --primary-foreground: 227 55% 10%; /* Dark text on light buttons */
+    /* Primary - Gold for main actions in dark mode */
+    --primary: 43 74% 55%; /* Gold for buttons in dark mode */
+    --primary-foreground: 227 55% 10%; /* Dark text on gold buttons */
 
     /* Secondary - Subtle blue surface */
     --secondary: 227 45% 20%;
@@ -98,8 +101,8 @@
     --muted: 227 40% 18%;
     --muted-foreground: 212 30% 65%; /* Readable muted text */
 
-    /* Accent - Gold remains vibrant */
-    --accent: 43 74% 55%; /* Slightly brighter gold for dark mode */
+    /* Accent - Light Blue for highlights in dark mode */
+    --accent: 212 75% 65%; /* Light blue for accents */
     --accent-foreground: 227 55% 10%;
 
     /* Destructive */
@@ -109,7 +112,7 @@
     /* Border and Input - Visible but subtle */
     --border: 227 40% 25%;
     --input: 227 40% 22%;
-    --ring: 212 75% 65%; /* Light blue focus ring */
+    --ring: 43 74% 55%; /* Gold focus ring in dark mode */
 
     /* Brand specific custom properties */
     --gold: 43 74% 55%;
@@ -185,7 +188,7 @@
 
 .premium-card::before {
   content: '';
-  @apply absolute inset-0 opacity-0 transition-opacity duration-300;
+  @apply absolute inset-0 opacity-0 transition-opacity duration-300 pointer-events-none;
   background: linear-gradient(135deg, hsl(var(--accent)/0.1) 0%, transparent 50%);
 }
 
@@ -672,4 +675,30 @@
 
 .gradient-blue {
   background: linear-gradient(135deg, hsl(var(--dark-blue)) 0%, hsl(var(--light-blue)) 100%);
+}
+
+/* Input autofill styles for dark mode */
+.dark input:-webkit-autofill,
+.dark input:-webkit-autofill:hover,
+.dark input:-webkit-autofill:focus,
+.dark input:-webkit-autofill:active,
+.dark textarea:-webkit-autofill,
+.dark textarea:-webkit-autofill:hover,
+.dark textarea:-webkit-autofill:focus,
+.dark textarea:-webkit-autofill:active,
+.dark select:-webkit-autofill,
+.dark select:-webkit-autofill:hover,
+.dark select:-webkit-autofill:focus,
+.dark select:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px hsl(227 40% 22%) inset !important;
+  -webkit-text-fill-color: hsl(60 15% 95%) !important;
+  caret-color: hsl(60 15% 95%) !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Input filled state styles for dark mode */
+.dark input:not(:placeholder-shown),
+.dark textarea:not(:placeholder-shown) {
+  background-color: hsl(227 40% 22%);
+  color: hsl(60 15% 95%);
 }
