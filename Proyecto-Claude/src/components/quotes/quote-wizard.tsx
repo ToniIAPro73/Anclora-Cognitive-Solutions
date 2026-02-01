@@ -259,7 +259,7 @@ export function QuoteWizard({ clients, projects }: QuoteWizardProps) {
                 <SelectTrigger>
                   <SelectValue placeholder="Selecciona un proyecto" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="max-h-60">
                   {projects.map((project) => (
                     <SelectItem key={project.project_id} value={project.project_id}>
                       {project.project_name}

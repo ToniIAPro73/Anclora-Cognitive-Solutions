@@ -13,7 +13,7 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
-      include: ['src/app/actions/**/*.ts', 'src/lib/validations/**/*.ts'],
+      include: ['src/app/actions/**/*.ts', 'src/lib/validations/**/*.ts', 'src/lib/utils.ts', 'src/lib/verifactu/**/*.ts'],
       exclude: [
         'src/**/*.d.ts',
         'src/types/**',

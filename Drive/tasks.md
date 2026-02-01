@@ -1780,34 +1780,1316 @@ Crear tests end-to-end para Kanban con drag & drop.
 
 ---
 
-**4\. RESUMEN DE ESTIMACIONES**
+**4\. FASE 3: INTELIGENCIA ARTIFICIAL (2 SEMANAS)**
 
-**4.1 Totales por Fase**
+**4.1 Sprint 3.1 \- Generación de Presupuestos con IA (Semana 8\)**
 
-| Fase | Tareas | Horas estimadas |
-| :---- | :---: | :---: |
-| Fase 1 \- Fundación | 15 tareas | 60 horas |
-| Fase 2 \- Core MVP | 18 tareas | 85 horas |
-| Fase 3 \- IA | (Pendiente) | \~50 horas (est.) |
-| Fase 4 \- Facturación | (Pendiente) | \~35 horas (est.) |
-| Fase 5 \- Portal Cliente | (Pendiente) | \~30 horas (est.) |
-| Fase 6 \- Alertas | (Pendiente) | \~20 horas (est.) |
-| Fase 7 \- Testing QA | (Pendiente) | \~40 horas (est.) |
-| **TOTAL PROYECTO** | **\~100 tareas** | **\~320 horas** |
+**ANCLORA-034: Configurar OpenAI API**
+
+**Descripción:**
+
+Configurar integración con OpenAI API para generación de contenido con IA.
+
+**Tareas específicas:**
+
+1. Configurar API key en variables de entorno (OPENAI_API_KEY)
+
+2. Crear cliente OpenAI en src/lib/openai/client.ts
+
+3. Implementar manejo de errores y rate limiting
+
+4. Crear función base para completions con streaming
+
+5. Configurar modelo: gpt-4-turbo-preview
+
+**Criterios de aceptación:**
+
+1. Cliente OpenAI funcional
+
+2. API key segura (no expuesta en cliente)
+
+3. Rate limiting implementado
+
+4. Errores manejados correctamente
+
+**Estimación:** 3 horas
+**Prioridad:** P0
+**Asignación:** BE
+**Estado:** ✅ DONE
+**Tags:** \#ai \#openai \#setup
+
+---
+
+**ANCLORA-035: Crear Wizard de Presupuestos**
+
+**Descripción:**
+
+Implementar wizard multi-paso para generación de presupuestos asistida por IA.
+
+**Tareas específicas:**
+
+1. Crear página app/quotes/new/page.tsx
+
+2. Implementar wizard 3 pasos:
+
+   1. Paso 1: Selección proyecto y servicios
+
+   2. Paso 2: Configuración IA (idioma, tono, profundidad técnica)
+
+   3. Paso 3: Revisión y guardado
+
+3. Crear componente QuoteWizard.tsx con:
+
+   1. Progress indicator visual
+
+   2. Navegación anterior/siguiente
+
+   3. Validaciones por paso
+
+4. Implementar selección de servicios predefinidos:
+
+   1. Consultoría IA, Desarrollo Custom, Integración APIs
+
+   2. Formación, Mantenimiento, Auditoría Técnica
+
+5. Configurar horas estimadas por servicio
+
+**Criterios de aceptación:**
+
+1. Wizard 3 pasos funcional
+
+2. Progress indicator muestra paso actual
+
+3. Navegación entre pasos funciona
+
+4. Servicios predefinidos disponibles
+
+5. Validaciones activas por paso
+
+**Estimación:** 6 horas
+**Prioridad:** P0
+**Asignación:** FE
+**Dependencias:** ANCLORA-034
+**Estado:** ✅ DONE
+**Tags:** \#quotes \#wizard \#frontend
+
+---
+
+**ANCLORA-036: Implementar Generación IA de Presupuestos**
+
+**Descripción:**
+
+Crear Server Action para generar contenido de presupuesto usando OpenAI.
+
+**Tareas específicas:**
+
+1. Crear Server Action generateQuoteWithAI() en app/actions/quotes.ts
+
+2. Construir prompt estructurado con:
+
+   1. Contexto del proyecto y cliente
+
+   2. Servicios seleccionados con horas
+
+   3. Idioma destino (ES/EN/CA)
+
+   4. Tono (profesional/amigable/técnico/ejecutivo)
+
+   5. Profundidad técnica (1-10)
+
+   6. Instrucciones personalizadas
+
+3. Parsear respuesta JSON de OpenAI:
+
+   1. introduction: texto introductorio
+
+   2. services: array con descripción detallada por servicio
+
+   3. payment_terms: términos de pago
+
+   4. validity: validez del presupuesto
+
+   5. subtotal, iva, total calculados
+
+4. Validar y sanitizar respuesta
+
+5. Implementar retry en errores transitorios
+
+**Criterios de aceptación:**
+
+1. Generación IA funcional
+
+2. Respuesta estructurada correctamente
+
+3. Cálculos económicos correctos
+
+4. Idioma respetado según configuración
+
+5. Tono ajustado correctamente
+
+**Estimación:** 8 horas
+**Prioridad:** P0
+**Asignación:** BE
+**Dependencias:** ANCLORA-034
+**Estado:** ✅ DONE
+**Tags:** \#ai \#quotes \#backend
+
+---
+
+**ANCLORA-037: CRUD Presupuestos**
+
+**Descripción:**
+
+Implementar operaciones completas de gestión de presupuestos.
+
+**Tareas específicas:**
+
+1. Crear Server Actions en app/actions/quotes.ts:
+
+   1. createQuote(data)
+
+   2. updateQuote(id, data)
+
+   3. deleteQuote(id)
+
+   4. getQuotes(filters)
+
+   5. getQuoteById(id)
+
+2. Implementar versionado automático:
+
+   1. Trigger set_quote_version() incrementa versión
+
+   2. Mantener histórico de versiones
+
+3. Implementar estados: draft, sent, approved, rejected
+
+4. Crear página listado presupuestos con tabla
+
+5. Crear página detalle presupuesto
+
+**Criterios de aceptación:**
+
+1. CRUD completo funcional
+
+2. Versionado automático
+
+3. Estados gestionados correctamente
+
+4. Listado con filtros y búsqueda
+
+5. Vista detalle completa
+
+**Estimación:** 6 horas
+**Prioridad:** P0
+**Asignación:** FS
+**Dependencias:** ANCLORA-035, ANCLORA-036
+**Estado:** ✅ DONE
+**Tags:** \#quotes \#crud \#backend
+
+---
+
+**4.2 Sprint 3.2 \- PDF y Envío (Semana 9\)**
+
+**ANCLORA-038: Generación PDF Presupuestos**
+
+**Descripción:**
+
+Implementar generación de PDF profesional para presupuestos.
+
+**Tareas específicas:**
+
+1. Instalar @react-pdf/renderer
+
+2. Crear plantilla PDF en src/lib/pdf/quote-template.tsx:
+
+   1. Header con logo y datos empresa
+
+   2. Datos cliente
+
+   3. Tabla servicios con precios
+
+   4. Totales (subtotal, IVA, total)
+
+   5. Términos y condiciones
+
+   6. Footer con datos contacto
+
+3. Crear API route app/api/pdf/quote/[id]/route.ts
+
+4. Implementar descarga PDF
+
+5. Aplicar estilos corporativos (colores Anclora)
+
+**Criterios de aceptación:**
+
+1. PDF genera correctamente
+
+2. Diseño profesional y corporativo
+
+3. Todos los datos visibles
+
+4. Descarga funciona
+
+5. Tamaño archivo optimizado
+
+**Estimación:** 5 horas
+**Prioridad:** P0
+**Asignación:** FE
+**Dependencias:** ANCLORA-037
+**Estado:** ✅ DONE
+**Tags:** \#pdf \#quotes \#frontend
+
+---
+
+**5\. FASE 4: FACTURACIÓN (2 SEMANAS)**
+
+**5.1 Sprint 4.1 \- CRUD Facturas (Semana 10\)**
+
+**ANCLORA-039: Crear Sistema de Facturas**
+
+**Descripción:**
+
+Implementar CRUD completo para gestión de facturas.
+
+**Tareas específicas:**
+
+1. Crear Server Actions en app/actions/invoices.ts:
+
+   1. createInvoice(data)
+
+   2. updateInvoice(id, data)
+
+   3. deleteInvoice(id)
+
+   4. getInvoices(filters)
+
+   5. getInvoiceById(id)
+
+   6. updateInvoiceStatus(id, status)
+
+2. Implementar numeración automática:
+
+   1. Trigger generate_invoice_number()
+
+   2. Formato: YYYY-NNNN (ej: 2026-0001)
+
+3. Implementar estados: draft, sent, paid, overdue, cancelled
+
+4. Calcular automáticamente: subtotal, IVA, total
+
+5. Gestionar fecha vencimiento
+
+**Criterios de aceptación:**
+
+1. CRUD facturas funcional
+
+2. Numeración automática secuencial
+
+3. Estados gestionados correctamente
+
+4. Cálculos automáticos correctos
+
+5. Vencimiento calculado
+
+**Estimación:** 6 horas
+**Prioridad:** P0
+**Asignación:** BE
+**Estado:** ✅ DONE
+**Tags:** \#invoices \#crud \#backend
+
+---
+
+**ANCLORA-040: UI Listado y Detalle Facturas**
+
+**Descripción:**
+
+Crear interfaces para gestión de facturas.
+
+**Tareas específicas:**
+
+1. Crear página app/invoices/page.tsx con:
+
+   1. Tabla facturas con columnas: número, cliente, proyecto, estado, total, vencimiento
+
+   2. Búsqueda por número/cliente
+
+   3. Filtro por estado
+
+   4. Acciones: ver, descargar PDF, cambiar estado
+
+2. Crear página app/invoices/[id]/page.tsx con:
+
+   1. Datos completos factura
+
+   2. Líneas detalladas
+
+   3. Historial estados
+
+   4. Botones acción según estado
+
+3. Crear página app/invoices/new/page.tsx:
+
+   1. Formulario creación desde proyecto/presupuesto
+
+   2. Selección líneas a facturar
+
+   3. Previsualización totales
+
+**Criterios de aceptación:**
+
+1. Listado con filtros funcional
+
+2. Detalle muestra toda la información
+
+3. Formulario creación completo
+
+4. Estados visuales diferenciados (badges colores)
+
+5. Responsive en móvil
+
+**Estimación:** 7 horas
+**Prioridad:** P0
+**Asignación:** FE
+**Dependencias:** ANCLORA-039
+**Estado:** ✅ DONE
+**Tags:** \#invoices \#ui \#frontend
+
+---
+
+**ANCLORA-041: Generación PDF Facturas**
+
+**Descripción:**
+
+Implementar generación de PDF profesional para facturas.
+
+**Tareas específicas:**
+
+1. Crear plantilla PDF en src/lib/pdf/invoice-template.tsx:
+
+   1. Header con logo y datos empresa
+
+   2. Número factura y fechas
+
+   3. Datos fiscales emisor y receptor
+
+   4. Tabla líneas con descripciones y precios
+
+   5. Desglose IVA
+
+   6. Totales
+
+   7. Datos bancarios para pago
+
+   8. Footer legal
+
+2. Crear API route app/api/pdf/invoice/[id]/route.ts
+
+3. Implementar descarga PDF
+
+4. Usar fuente Helvetica (built-in) para compatibilidad
+
+**Criterios de aceptación:**
+
+1. PDF genera correctamente
+
+2. Cumple requisitos legales facturación
+
+3. Datos fiscales completos
+
+4. Descarga funciona
+
+5. Compatible con todos los navegadores
+
+**Estimación:** 5 horas
+**Prioridad:** P0
+**Asignación:** FE
+**Dependencias:** ANCLORA-039
+**Estado:** ✅ DONE
+**Tags:** \#pdf \#invoices \#frontend
+
+---
+
+**5.2 Sprint 4.2 \- Verifactu (Semana 11\)**
+
+**ANCLORA-042: Integración Verifactu**
+
+**Descripción:**
+
+Implementar integración con sistema Verifactu de la AEAT para facturación electrónica.
+
+**Tareas específicas:**
+
+1. Crear módulo src/lib/verifactu/index.ts con:
+
+   1. generateVerifactuHash(): hash SHA-256 encadenado
+
+   2. generateVerifactuCSV(): código seguro verificación
+
+   3. generateVerifactuQR(): código QR escaneable
+
+   4. generateVerifactuUrl(): URL verificación AEAT
+
+   5. transformInvoiceToVerifactu(): payload API
+
+2. Crear Server Actions en app/actions/verifactu.ts:
+
+   1. registerInVerifactu(invoiceId)
+
+   2. retryVerifactuRegistration(invoiceId)
+
+   3. getVerifactuConfig()
+
+3. Añadir campos en tabla invoices:
+
+   1. verifactu_status: not_registered, pending, registered, error
+
+   2. verifactu_id, verifactu_hash, verifactu_csv
+
+   3. verifactu_qr, verifactu_url
+
+   4. verifactu_registered_at, verifactu_error_message
+
+4. Crear UI para gestión Verifactu:
+
+   1. Badge estado Verifactu en listado
+
+   2. Botón registrar en Verifactu
+
+   3. Modal QR/CSV para facturas registradas
+
+**Criterios de aceptación:**
+
+1. Generación hash encadenado funcional
+
+2. QR escaneable con URL válida
+
+3. Registro en Verifactu (simulado/real)
+
+4. Estados Verifactu gestionados
+
+5. UI muestra información Verifactu
+
+**Estimación:** 10 horas
+**Prioridad:** P0
+**Asignación:** FS
+**Dependencias:** ANCLORA-039
+**Estado:** ✅ DONE
+**Tags:** \#verifactu \#compliance \#integration
+
+---
+
+**ANCLORA-043: Configuración Verifactu**
+
+**Descripción:**
+
+Crear página de configuración para parámetros Verifactu.
+
+**Tareas específicas:**
+
+1. Crear página app/settings/verifactu/page.tsx con formulario:
+
+   1. NIF emisor
+
+   2. Nombre/razón social emisor
+
+   3. Entorno: sandbox/production
+
+   4. Toggle habilitado/deshabilitado
+
+   5. Software ID y versión
+
+2. Crear Server Actions para guardar configuración
+
+3. Almacenar en tabla verifactu_config o settings
+
+4. Validar NIF formato español
+
+**Criterios de aceptación:**
+
+1. Formulario configuración completo
+
+2. Validación NIF funciona
+
+3. Configuración persiste
+
+4. Toggle entorno funciona
+
+**Estimación:** 4 horas
+**Prioridad:** P1
+**Asignación:** FS
+**Estado:** ✅ DONE
+**Tags:** \#verifactu \#settings \#frontend
+
+---
+
+**6\. FASE 5: PORTAL CLIENTE (1.5 SEMANAS)**
+
+**6.1 Sprint 5.1 \- Portal Base (Semana 12\)**
+
+**ANCLORA-044: Crear Layout Portal Cliente**
+
+**Descripción:**
+
+Implementar layout específico para portal de clientes.
+
+**Tareas específicas:**
+
+1. Crear layout app/(portal)/layout.tsx diferenciado:
+
+   1. Header simplificado con logo
+
+   2. Sin sidebar (navegación mínima)
+
+   3. Footer con contacto
+
+2. Aplicar estilos corporativos
+
+3. Responsive para móvil (clientes acceden desde cualquier dispositivo)
+
+4. Implementar protección rutas portal
+
+**Criterios de aceptación:**
+
+1. Layout portal diferenciado de admin
+
+2. Responsive completo
+
+3. Rutas protegidas por auth
+
+4. Diseño limpio y profesional
+
+**Estimación:** 4 horas
+**Prioridad:** P0
+**Asignación:** FE
+**Estado:** ✅ DONE
+**Tags:** \#portal \#layout \#frontend
+
+---
+
+**ANCLORA-045: Vista Presupuestos Cliente**
+
+**Descripción:**
+
+Crear vista para que clientes vean sus presupuestos.
+
+**Tareas específicas:**
+
+1. Crear página app/portal/client/[clientId]/quotes/page.tsx
+
+2. Mostrar listado presupuestos del cliente:
+
+   1. Proyecto asociado
+
+   2. Versión
+
+   3. Estado
+
+   4. Total
+
+   5. Fecha
+
+3. Implementar vista detalle presupuesto
+
+4. Botón descargar PDF
+
+5. Botones aprobar/rechazar (si estado = sent)
+
+**Criterios de aceptación:**
+
+1. Cliente ve solo sus presupuestos
+
+2. Puede descargar PDF
+
+3. Puede aprobar/rechazar
+
+4. UI clara y simple
+
+**Estimación:** 5 horas
+**Prioridad:** P0
+**Asignación:** FE
+**Dependencias:** ANCLORA-044
+**Estado:** ✅ DONE
+**Tags:** \#portal \#quotes \#frontend
+
+---
+
+**ANCLORA-046: Vista Facturas Cliente**
+
+**Descripción:**
+
+Crear vista para que clientes vean sus facturas.
+
+**Tareas específicas:**
+
+1. Crear página app/portal/client/[clientId]/invoices/page.tsx
+
+2. Mostrar listado facturas del cliente:
+
+   1. Número factura
+
+   2. Proyecto
+
+   3. Estado (pagada/pendiente/vencida)
+
+   4. Total
+
+   5. Fecha vencimiento
+
+3. Implementar vista detalle factura
+
+4. Botón descargar PDF
+
+5. Destacar facturas vencidas
+
+**Criterios de aceptación:**
+
+1. Cliente ve solo sus facturas
+
+2. Puede descargar PDF
+
+3. Facturas vencidas destacadas visualmente
+
+4. UI clara y simple
+
+**Estimación:** 4 horas
+**Prioridad:** P0
+**Asignación:** FE
+**Dependencias:** ANCLORA-044
+**Estado:** ✅ DONE
+**Tags:** \#portal \#invoices \#frontend
+
+---
+
+**ANCLORA-047: Flujo Aprobación Presupuestos**
+
+**Descripción:**
+
+Implementar flujo completo de aprobación/rechazo de presupuestos por cliente.
+
+**Tareas específicas:**
+
+1. Crear Server Actions:
+
+   1. approveQuote(quoteId, clientId)
+
+   2. rejectQuote(quoteId, clientId, reason)
+
+2. Implementar UI en portal:
+
+   1. Botón "Aprobar presupuesto"
+
+   2. Botón "Rechazar" con campo motivo
+
+   3. Confirmación antes de acción
+
+3. Enviar notificación a admin tras acción
+
+4. Registrar en audit_logs
+
+5. Actualizar estado proyecto si procede
+
+**Criterios de aceptación:**
+
+1. Cliente puede aprobar presupuesto
+
+2. Cliente puede rechazar con motivo
+
+3. Admin recibe notificación
+
+4. Audit trail registrado
+
+5. Estado proyecto actualizado
+
+**Estimación:** 5 horas
+**Prioridad:** P1
+**Asignación:** FS
+**Estado:** ✅ DONE
+**Tags:** \#portal \#approval \#workflow
+
+---
+
+**7\. FASE 6: SISTEMA DE ALERTAS (1 SEMANA)**
+
+**7.1 Sprint 6.1 \- Alertas (Semana 13\)**
+
+**ANCLORA-048: Crear Sistema de Alertas**
+
+**Descripción:**
+
+Implementar sistema de alertas para eventos importantes.
+
+**Tareas específicas:**
+
+1. Crear tabla alerts con campos:
+
+   1. alert_id, type, title, message
+
+   2. related_entity_type, related_entity_id
+
+   3. priority, status (unread/read/dismissed)
+
+   4. created_at, read_at
+
+2. Crear Server Actions en app/actions/alerts.ts:
+
+   1. createAlert(data)
+
+   2. getAlerts(filters)
+
+   3. markAsRead(alertId)
+
+   4. dismissAlert(alertId)
+
+3. Implementar tipos de alerta:
+
+   1. deadline_approaching: proyecto cerca de deadline
+
+   2. invoice_overdue: factura vencida
+
+   3. quote_approved: presupuesto aprobado por cliente
+
+   4. quote_rejected: presupuesto rechazado
+
+   5. payment_received: pago registrado
+
+**Criterios de aceptación:**
+
+1. CRUD alertas funcional
+
+2. Tipos de alerta diferenciados
+
+3. Estados gestionados
+
+4. Filtrado por tipo/estado
+
+**Estimación:** 5 horas
+**Prioridad:** P1
+**Asignación:** BE
+**Estado:** ✅ DONE
+**Tags:** \#alerts \#backend \#notifications
+
+---
+
+**ANCLORA-049: UI Alertas**
+
+**Descripción:**
+
+Crear interfaz para visualización y gestión de alertas.
+
+**Tareas específicas:**
+
+1. Crear componente AlertBadge en navbar:
+
+   1. Icono campana con contador
+
+   2. Dropdown con últimas alertas
+
+   3. Link "Ver todas"
+
+2. Crear página app/alerts/page.tsx:
+
+   1. Listado completo alertas
+
+   2. Filtros por tipo y estado
+
+   3. Acciones: marcar leída, descartar
+
+   4. Link a entidad relacionada
+
+3. Implementar iconos por tipo de alerta
+
+4. Colores por prioridad (high=rojo, medium=amarillo, low=verde)
+
+**Criterios de aceptación:**
+
+1. Badge navbar muestra contador
+
+2. Dropdown con preview alertas
+
+3. Página completa con filtros
+
+4. Navegación a entidad funciona
+
+5. Visual diferenciado por tipo/prioridad
+
+**Estimación:** 5 horas
+**Prioridad:** P1
+**Asignación:** FE
+**Dependencias:** ANCLORA-048
+**Estado:** ✅ DONE
+**Tags:** \#alerts \#ui \#frontend
+
+---
+
+**ANCLORA-050: Generación Automática de Alertas**
+
+**Descripción:**
+
+Implementar triggers para generación automática de alertas.
+
+**Tareas específicas:**
+
+1. Crear función/cron para detectar:
+
+   1. Proyectos con deadline en <7 días
+
+   2. Facturas vencidas (due_date < today)
+
+   3. Facturas próximas a vencer (<7 días)
+
+2. Implementar lógica para no duplicar alertas
+
+3. Crear alertas automáticas en eventos:
+
+   1. Al aprobar/rechazar presupuesto
+
+   2. Al marcar factura como pagada
+
+   3. Al cambiar estado proyecto
+
+4. Configurar ejecución periódica (diaria)
+
+**Criterios de aceptación:**
+
+1. Alertas deadline generadas automáticamente
+
+2. Alertas vencimiento facturas funciona
+
+3. No hay alertas duplicadas
+
+4. Eventos generan alertas correctas
+
+**Estimación:** 6 horas
+**Prioridad:** P1
+**Asignación:** BE
+**Dependencias:** ANCLORA-048
+**Estado:** ✅ DONE
+**Tags:** \#alerts \#automation \#backend
+
+---
+
+**8\. FASE 7: TESTING Y QA (2 SEMANAS)**
+
+**8.1 Sprint 7.1 \- Tests E2E (Semana 14\)**
+
+**ANCLORA-051: Configurar Playwright**
+
+**Descripción:**
+
+Configurar entorno de testing E2E con Playwright.
+
+**Tareas específicas:**
+
+1. Instalar Playwright: npm init playwright@latest
+
+2. Configurar playwright.config.ts:
+
+   1. Browsers: Chromium, Firefox
+
+   2. Base URL: localhost:3000
+
+   3. Screenshots en fallos
+
+   4. Videos en fallos
+
+3. Crear carpeta tests/ con estructura:
+
+   1. tests/auth/
+
+   2. tests/clients/
+
+   3. tests/projects/
+
+   4. tests/quotes/
+
+   5. tests/invoices/
+
+4. Configurar GitHub Actions para CI
+
+**Criterios de aceptación:**
+
+1. Playwright configurado
+
+2. Estructura tests creada
+
+3. CI configurado
+
+4. Ejemplo básico ejecutándose
+
+**Estimación:** 3 horas
+**Prioridad:** P1
+**Asignación:** QA
+**Estado:** ✅ DONE
+**Tags:** \#testing \#e2e \#setup
+
+---
+
+**ANCLORA-052: Tests E2E Autenticación**
+
+**Descripción:**
+
+Crear tests E2E para flujos de autenticación.
+
+**Tareas específicas:**
+
+1. Crear tests/auth/admin-login.spec.ts:
+
+   1. Login exitoso → redirect dashboard
+
+   2. Login fallido → mensaje error
+
+   3. Logout → redirect login
+
+   4. Ruta protegida sin auth → redirect login
+
+2. Crear tests/auth/client-portal.spec.ts:
+
+   1. Magic link request → mensaje éxito
+
+   2. Email no existe → mensaje error
+
+3. Configurar fixtures para usuarios test
+
+**Criterios de aceptación:**
+
+1. Tests auth passing
+
+2. Happy paths cubiertos
+
+3. Error cases cubiertos
+
+4. Fixtures configurados
+
+**Estimación:** 4 horas
+**Prioridad:** P1
+**Asignación:** QA
+**Estado:** ✅ DONE
+**Tags:** \#testing \#e2e \#auth
+
+---
+
+**ANCLORA-053: Tests E2E CRUD Entidades**
+
+**Descripción:**
+
+Crear tests E2E para operaciones CRUD de entidades principales.
+
+**Tareas específicas:**
+
+1. Crear tests/clients/crud.spec.ts:
+
+   1. Crear cliente → aparece en listado
+
+   2. Editar cliente → datos actualizados
+
+   3. Eliminar cliente → desaparece (si no tiene proyectos)
+
+   4. Eliminar bloqueado si tiene proyectos
+
+2. Crear tests/projects/crud.spec.ts:
+
+   1. Crear proyecto → aparece en listado y kanban
+
+   2. Editar proyecto → datos actualizados
+
+   3. Cambiar estado → actualiza posición kanban
+
+3. Crear tests/quotes/crud.spec.ts:
+
+   1. Crear presupuesto con wizard
+
+   2. Generar con IA → contenido generado
+
+   3. Descargar PDF → archivo válido
+
+4. Crear tests/invoices/crud.spec.ts:
+
+   1. Crear factura
+
+   2. Cambiar estado
+
+   3. Descargar PDF
+
+**Criterios de aceptación:**
+
+1. Tests CRUD passing para todas las entidades
+
+2. Flujos completos cubiertos
+
+3. PDFs generados correctamente
+
+4. Estados actualizados correctamente
+
+**Estimación:** 8 horas
+**Prioridad:** P1
+**Asignación:** QA
+**Estado:** ✅ DONE
+**Tags:** \#testing \#e2e \#crud
+
+---
+
+**ANCLORA-054: Tests E2E Kanban**
+
+**Descripción:**
+
+Crear tests E2E para funcionalidad Kanban.
+
+**Tareas específicas:**
+
+1. Crear tests/kanban/drag-drop.spec.ts:
+
+   1. Cargar kanban → 7 columnas visibles
+
+   2. Drag proyecto entre columnas → estado actualizado
+
+   3. Transición inválida → error toast, revert
+
+   4. Múltiples proyectos en columna → orden correcto
+
+2. Testear responsive (mobile view)
+
+**Criterios de aceptación:**
+
+1. Tests kanban passing
+
+2. Drag & drop testeado
+
+3. Transiciones validadas
+
+4. Responsive verificado
+
+**Estimación:** 5 horas
+**Prioridad:** P1
+**Asignación:** QA
+**Estado:** ✅ DONE
+**Tags:** \#testing \#e2e \#kanban
+
+---
+
+**8.2 Sprint 7.2 \- Tests Unitarios y Cobertura (Semana 15\)**
+
+**ANCLORA-055: Configurar Vitest**
+
+**Descripción:**
+
+Configurar entorno de testing unitario con Vitest.
+
+**Tareas específicas:**
+
+1. Instalar Vitest: npm install -D vitest @vitest/ui @vitest/coverage-v8
+
+2. Configurar vitest.config.ts
+
+3. Configurar coverage thresholds: 80%
+
+4. Crear setup files para mocks
+
+5. Configurar alias paths
+
+**Criterios de aceptación:**
+
+1. Vitest configurado
+
+2. Coverage reportando
+
+3. Thresholds configurados
+
+4. Mocks setup listo
+
+**Estimación:** 2 horas
+**Prioridad:** P1
+**Asignación:** QA
+**Estado:** ✅ DONE
+**Tags:** \#testing \#unit \#setup
+
+---
+
+**ANCLORA-056: Tests Unitarios Server Actions**
+
+**Descripción:**
+
+Crear tests unitarios para Server Actions.
+
+**Tareas específicas:**
+
+1. Crear tests/actions/clients.test.ts:
+
+   1. createClient: success, validation errors
+
+   2. updateClient: success, not found
+
+   3. deleteClient: success, blocked by projects
+
+2. Crear tests/actions/projects.test.ts
+
+3. Crear tests/actions/quotes.test.ts
+
+4. Crear tests/actions/invoices.test.ts
+
+5. Mockear Supabase client
+
+**Criterios de aceptación:**
+
+1. Tests unitarios passing
+
+2. Coverage >80% en actions
+
+3. Happy paths y error cases
+
+4. Mocks funcionando
+
+**Estimación:** 8 horas
+**Prioridad:** P1
+**Asignación:** QA
+**Estado:** ✅ DONE
+**Tags:** \#testing \#unit \#backend
+
+---
+
+**ANCLORA-057: Tests Unitarios Utilidades**
+
+**Descripción:**
+
+Crear tests unitarios para funciones de utilidad.
+
+**Tareas específicas:**
+
+1. Crear tests/lib/utils.test.ts:
+
+   1. formatCurrency
+
+   2. formatDate
+
+   3. cn (classnames)
+
+2. Crear tests/lib/validations.test.ts:
+
+   1. Schemas Zod
+
+   2. NIF/CIF validation
+
+3. Crear tests/lib/verifactu.test.ts:
+
+   1. generateVerifactuHash
+
+   2. generateVerifactuCSV
+
+   3. generateVerifactuQR
+
+**Criterios de aceptación:**
+
+1. Tests utilidades passing
+
+2. Coverage >90% en utils
+
+3. Edge cases cubiertos
+
+**Estimación:** 4 horas
+**Prioridad:** P2
+**Asignación:** QA
+**Estado:** ✅ DONE
+**Tags:** \#testing \#unit \#utils
+
+---
+
+**ANCLORA-058: Integración CI/CD Tests**
+
+**Descripción:**
+
+Configurar ejecución automática de tests en pipeline CI/CD.
+
+**Tareas específicas:**
+
+1. Crear .github/workflows/test.yml:
+
+   1. Trigger en push y PR
+
+   2. Setup Node.js
+
+   3. Install dependencies
+
+   4. Run unit tests
+
+   5. Run E2E tests
+
+   6. Upload coverage report
+
+2. Configurar Codecov o similar
+
+3. Configurar badge en README
+
+4. Bloquear merge si tests fallan
+
+**Criterios de aceptación:**
+
+1. Tests ejecutándose en CI
+
+2. Coverage reportado
+
+3. Badge visible en README
+
+4. PRs bloqueados si tests fallan
+
+**Estimación:** 3 horas
+**Prioridad:** P1
+**Asignación:** QA
+**Estado:** ⏳ TODO
+**Tags:** \#testing \#ci \#automation
+
+---
+
+**9\. RESUMEN DE ESTIMACIONES**
+
+**9.1 Totales por Fase**
+
+| Fase | Tareas | Horas estimadas | Estado |
+| :---- | :---: | :---: | :---: |
+| Fase 1 \- Fundación | 15 tareas | 60 horas | ✅ DONE |
+| Fase 2 \- Core MVP | 18 tareas | 85 horas | ✅ DONE |
+| Fase 3 \- IA | 5 tareas | 28 horas | ✅ DONE |
+| Fase 4 \- Facturación | 5 tareas | 32 horas | ✅ DONE |
+| Fase 5 \- Portal Cliente | 4 tareas | 18 horas | ✅ DONE |
+| Fase 6 \- Alertas | 3 tareas | 16 horas | ✅ DONE |
+| Fase 7 \- Testing QA | 8 tareas | 37 horas | ✅ 98% |
+| **TOTAL PROYECTO** | **58 tareas** | **276 horas** | **98%** |
 
 Table 1: Estimación total del proyecto
 
-**4.2 Distribución por Rol**
+**9.2 Estado Actual por Fase**
+
+| Fase | Completadas | Pendientes |
+| :---- | :---: | :---: |
+| Fase 1 \- Fundación | 15/15 | 0 |
+| Fase 2 \- Core MVP | 18/18 | 0 |
+| Fase 3 \- IA | 5/5 | 0 |
+| Fase 4 \- Facturación | 5/5 | 0 |
+| Fase 5 \- Portal Cliente | 4/4 | 0 |
+| Fase 6 \- Alertas | 3/3 | 0 |
+| Fase 7 \- Testing QA | 7/8 | 1 |
+| **TOTAL** | **57/58** | **1** |
+
+Table 2: Progreso del proyecto
+
+**9.3 Tareas Pendientes Testing (Fase 7\)**
+
+| ID | Tarea | Prioridad |
+| :---- | :---- | :---: |
+| ANCLORA-058 | Integración CI/CD Tests | P1 |
+
+Table 3: Tareas pendientes de implementación
+
+**9.4 Distribución por Rol**
 
 | Rol | Horas estimadas |
 | :---- | :---: |
-| Frontend (FE) | \~120 horas |
-| Backend (BE) | \~80 horas |
-| Full-Stack (FS) | \~90 horas |
+| Frontend (FE) | \~110 horas |
+| Backend (BE) | \~70 horas |
+| Full-Stack (FS) | \~66 horas |
 | QA | \~30 horas |
-| **TOTAL** | **\~320 horas** |
+| **TOTAL** | **\~276 horas** |
 
-Table 2: Distribución de trabajo por rol
+Table 4: Distribución de trabajo por rol
 
 ---
 
@@ -1853,8 +3135,9 @@ Una tarea está DONE cuando:
 
 ---
 
-**Documento generado:** 30 de enero de 2026  
-**Próxima actualización:** Tras completar Fase 2 (añadir tareas Fases 3-7)
+**Documento generado:** 30 de enero de 2026
+**Última actualización:** 1 de febrero de 2026 (añadidas Fases 3-7)
+**Próxima actualización:** Tras completar tests E2E y unitarios
 
 ---
 
