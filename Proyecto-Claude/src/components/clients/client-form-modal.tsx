@@ -101,7 +101,7 @@ export function ClientFormModal({ client, open, onOpenChange }: ClientFormModalP
     <Dialog open={dialogOpen} onOpenChange={handleOpenChange}>
       {!isControlled && (
         <DialogTrigger asChild>
-          <Button variant="accent">
+          <Button>
             <Plus className="mr-2 h-4 w-4" />
             Nuevo cliente
           </Button>

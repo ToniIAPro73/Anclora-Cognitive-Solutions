@@ -85,14 +85,14 @@ export function Sidebar() {
               className={cn(
                 'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200',
                 isActive
-                  ? 'bg-accent text-accent-foreground shadow-sm'
+                  ? 'bg-primary text-primary-foreground shadow-sm'
                   : 'text-muted-foreground hover:bg-secondary/50 hover:text-foreground'
               )}
               title={collapsed ? item.name : undefined}
             >
               <item.icon className={cn(
                 'h-5 w-5 flex-shrink-0',
-                isActive && 'text-accent-foreground'
+                isActive && 'text-primary-foreground'
               )} />
               {!collapsed && <span>{item.name}</span>}
             </Link>

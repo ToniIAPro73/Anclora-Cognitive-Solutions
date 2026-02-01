@@ -13,7 +13,7 @@ export default function QuotesPage() {
         title="Presupuestos"
         description="Gestiona todos tus presupuestos"
         actions={
-          <Button variant="accent" asChild>
+          <Button asChild>
             <Link href="/dashboard/quotes/new">
               <Plus className="mr-2 h-4 w-4" />
               Nuevo Presupuesto

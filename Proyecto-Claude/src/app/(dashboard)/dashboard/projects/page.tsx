@@ -13,7 +13,7 @@ export default function ProjectsPage() {
         title="Proyectos"
         description="Gestiona todos tus proyectos"
         actions={
-          <Button variant="accent" asChild>
+          <Button asChild>
             <Link href="/dashboard/projects/new">
               <Plus className="mr-2 h-4 w-4" />
               Nuevo Proyecto

@@ -103,7 +103,7 @@ export function AlertFormModal() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="accent">
+        <Button>
           <Plus className="mr-2 h-4 w-4" />
           Nueva Alerta
         </Button>
@@ -179,7 +179,7 @@ export function AlertFormModal() {
             <Button type="button" variant="outline" onClick={() => setIsOpen(false)}>
               Cancelar
             </Button>
-            <Button type="submit" variant="accent" disabled={isLoading}>
+            <Button type="submit" disabled={isLoading}>
               {isLoading ? 'Creando...' : 'Crear Alerta'}
             </Button>
           </DialogFooter>

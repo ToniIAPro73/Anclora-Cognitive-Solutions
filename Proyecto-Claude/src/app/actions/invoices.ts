@@ -240,13 +240,20 @@ export async function importFromQuote(projectId: string): Promise<ActionResult<I
       }
     }
 
-    const content = quote.content_json as { services: Array<{ name: string; hours: number; hourly_rate: number; amount: number }> }
+    const content = quote.content_json as { services?: Array<{ name: string; hours: number; hourly_rate: number; amount?: number; total?: number }> }
+
+    if (!content?.services) {
+      return {
+        success: false,
+        error: 'El presupuesto no tiene servicios definidos',
+      }
+    }
 
     const lineItems = content.services.map((service) => ({
-      description: service.name,
-      quantity: service.hours,
-      unit_price: service.hourly_rate,
-      amount: service.amount,
+      description: service.name || '',
+      quantity: service.hours || 0,
+      unit_price: service.hourly_rate || 0,
+      amount: service.amount ?? service.total ?? (service.hours * service.hourly_rate) ?? 0,
     }))
 
     return { success: true, data: lineItems }

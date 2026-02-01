@@ -89,14 +89,14 @@ export function InvoiceForm({ quotes }: InvoiceFormProps) {
     if (quote) {
       setValue('project_id', quote.project_id)
 
-      const content = quote.content_json as { services?: Array<{ name: string; hours: number; hourly_rate: number; total: number }> } | null
+      const content = quote.content_json as { services?: Array<{ name: string; hours: number; hourly_rate: number; amount?: number; total?: number }> } | null
 
       if (content?.services) {
         const items = content.services.map((s) => ({
-          description: s.name,
-          quantity: s.hours,
-          unit_price: s.hourly_rate,
-          amount: s.total,
+          description: s.name || '',
+          quantity: s.hours || 0,
+          unit_price: s.hourly_rate || 0,
+          amount: s.amount ?? s.total ?? (s.hours * s.hourly_rate) ?? 0,
         }))
         setLineItems(items)
       }
@@ -233,7 +233,7 @@ export function InvoiceForm({ quotes }: InvoiceFormProps) {
                               type="number"
                               step="0.01"
                               placeholder="Total"
-                              value={item.amount.toFixed(2)}
+                              value={(item.amount ?? 0).toFixed(2)}
                               disabled
                             />
                           </div>
