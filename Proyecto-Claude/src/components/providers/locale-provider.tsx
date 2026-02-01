@@ -3,10 +3,12 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { type Locale, translations } from '@/lib/i18n/translations'
 
+type TranslationType = typeof translations[Locale]
+
 interface LocaleContextType {
   locale: Locale
   setLocale: (locale: Locale) => void
-  t: typeof translations.es
+  t: TranslationType
 }
 
 const LocaleContext = createContext<LocaleContextType | undefined>(undefined)

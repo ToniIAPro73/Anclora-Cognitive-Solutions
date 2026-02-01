@@ -158,6 +158,15 @@ export type Database = {
           notes: string | null
           created_at: string
           updated_at: string
+          // Verifactu fields
+          verifactu_status: VerifactuStatus
+          verifactu_id: string | null
+          verifactu_qr: string | null
+          verifactu_csv: string | null
+          verifactu_url: string | null
+          verifactu_hash: string | null
+          verifactu_registered_at: string | null
+          verifactu_error_message: string | null
         }
         Insert: {
           invoice_id?: string
@@ -175,6 +184,15 @@ export type Database = {
           notes?: string | null
           created_at?: string
           updated_at?: string
+          // Verifactu fields
+          verifactu_status?: VerifactuStatus
+          verifactu_id?: string | null
+          verifactu_qr?: string | null
+          verifactu_csv?: string | null
+          verifactu_url?: string | null
+          verifactu_hash?: string | null
+          verifactu_registered_at?: string | null
+          verifactu_error_message?: string | null
         }
         Update: {
           invoice_id?: string
@@ -192,6 +210,15 @@ export type Database = {
           notes?: string | null
           created_at?: string
           updated_at?: string
+          // Verifactu fields
+          verifactu_status?: VerifactuStatus
+          verifactu_id?: string | null
+          verifactu_qr?: string | null
+          verifactu_csv?: string | null
+          verifactu_url?: string | null
+          verifactu_hash?: string | null
+          verifactu_registered_at?: string | null
+          verifactu_error_message?: string | null
         }
       }
       alerts: {
@@ -261,6 +288,85 @@ export type Database = {
           changed_at?: string
         }
       }
+      verifactu_config: {
+        Row: {
+          config_id: string
+          nif_emisor: string
+          nombre_emisor: string
+          entorno: 'sandbox' | 'production'
+          api_key: string | null
+          api_secret: string | null
+          enabled: boolean
+          software_id: string
+          software_version: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          config_id?: string
+          nif_emisor: string
+          nombre_emisor: string
+          entorno?: 'sandbox' | 'production'
+          api_key?: string | null
+          api_secret?: string | null
+          enabled?: boolean
+          software_id?: string
+          software_version?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          config_id?: string
+          nif_emisor?: string
+          nombre_emisor?: string
+          entorno?: 'sandbox' | 'production'
+          api_key?: string | null
+          api_secret?: string | null
+          enabled?: boolean
+          software_id?: string
+          software_version?: string
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      verifactu_logs: {
+        Row: {
+          log_id: number
+          invoice_id: string | null
+          action: VerifactuLogAction
+          status: VerifactuLogStatus
+          request_payload: Json | null
+          response_payload: Json | null
+          error_message: string | null
+          ip_address: string | null
+          user_agent: string | null
+          created_at: string
+        }
+        Insert: {
+          log_id?: number
+          invoice_id?: string | null
+          action: VerifactuLogAction
+          status: VerifactuLogStatus
+          request_payload?: Json | null
+          response_payload?: Json | null
+          error_message?: string | null
+          ip_address?: string | null
+          user_agent?: string | null
+          created_at?: string
+        }
+        Update: {
+          log_id?: number
+          invoice_id?: string | null
+          action?: VerifactuLogAction
+          status?: VerifactuLogStatus
+          request_payload?: Json | null
+          response_payload?: Json | null
+          error_message?: string | null
+          ip_address?: string | null
+          user_agent?: string | null
+          created_at?: string
+        }
+      }
     }
     Views: {
       [_ in never]: never
@@ -284,6 +390,9 @@ export type QuoteStatus = 'draft' | 'sent' | 'viewed' | 'accepted' | 'rejected'
 export type InvoiceStatus = 'draft' | 'sent' | 'paid' | 'overdue' | 'cancelled'
 export type AlertType = 'deadline_approaching' | 'budget_exceeded' | 'invoice_overdue' | 'project_stale' | 'client_inactive'
 export type AlertPriority = 'low' | 'medium' | 'high' | 'critical'
+export type VerifactuStatus = 'not_registered' | 'pending' | 'registered' | 'error' | 'cancelled'
+export type VerifactuLogAction = 'register' | 'retry' | 'cancel' | 'query' | 'config_update'
+export type VerifactuLogStatus = 'pending' | 'success' | 'error'
 
 // Content types
 export interface QuoteService {
@@ -334,6 +443,13 @@ export type InvoiceUpdate = Database['anclora']['Tables']['invoices']['Update']
 export type Alert = Database['anclora']['Tables']['alerts']['Row']
 export type AuditLog = Database['anclora']['Tables']['audit_logs']['Row']
 
+export type VerifactuConfig = Database['anclora']['Tables']['verifactu_config']['Row']
+export type VerifactuConfigInsert = Database['anclora']['Tables']['verifactu_config']['Insert']
+export type VerifactuConfigUpdate = Database['anclora']['Tables']['verifactu_config']['Update']
+
+export type VerifactuLog = Database['anclora']['Tables']['verifactu_logs']['Row']
+export type VerifactuLogInsert = Database['anclora']['Tables']['verifactu_logs']['Insert']
+
 // Extended types with relations
 export interface ProjectWithClient extends Project {
   clients: Client
@@ -349,4 +465,13 @@ export interface QuoteWithProject extends Quote {
 
 export interface InvoiceWithProject extends Invoice {
   projects: ProjectWithClient
+}
+
+// Verifactu data interface for registration
+export interface VerifactuRegistrationData {
+  hash: string
+  csv: string
+  qr: string
+  url: string
+  verifactuId: string
 }

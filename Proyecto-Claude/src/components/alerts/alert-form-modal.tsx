@@ -78,6 +78,7 @@ export function AlertFormModal() {
 
     const { error } = await supabase
       .from('alerts')
+      // @ts-ignore - Supabase types issue with custom schema
       .insert({
         type: data.type,
         priority: data.priority,

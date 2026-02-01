@@ -38,6 +38,12 @@ const badgeVariants = cva(
         viewed: "border-transparent bg-purple-500 text-white",
         accepted: "border-transparent bg-green-600 text-white",
         rejected: "border-transparent bg-red-500 text-white",
+        // Verifactu status
+        not_registered: "border-transparent bg-slate-400 text-white",
+        pending: "border-transparent bg-amber-500 text-white",
+        registered: "border-transparent bg-emerald-500 text-white",
+        error: "border-transparent bg-red-500 text-white",
+        verifactu_cancelled: "border-transparent bg-gray-500 text-white",
       },
     },
     defaultVariants: {

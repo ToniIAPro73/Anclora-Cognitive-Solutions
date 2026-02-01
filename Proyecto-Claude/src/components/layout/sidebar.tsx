@@ -10,6 +10,7 @@ import {
   FileText,
   Receipt,
   Bell,
+  Settings,
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react'
@@ -52,6 +53,11 @@ const navigation = [
     name: 'Alertas',
     href: '/dashboard/alerts',
     icon: Bell,
+  },
+  {
+    name: 'Configuración',
+    href: '/dashboard/settings',
+    icon: Settings,
   },
 ]
 

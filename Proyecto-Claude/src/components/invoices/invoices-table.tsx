@@ -39,10 +39,13 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import { EmptyState } from '@/components/layout/empty-state'
+import { VerifactuStatusBadge } from '@/components/invoices/verifactu-status-badge'
+import { VerifactuQRModal } from '@/components/invoices/verifactu-qr-modal'
 import { getInvoices, deleteInvoice, updateInvoiceStatus } from '@/app/actions/invoices'
+import { registerInVerifactu, retryVerifactuRegistration } from '@/app/actions/verifactu'
 import { useDebouncedCallback } from '@/hooks/use-debounced-callback'
 import { cn, formatDate, formatCurrency } from '@/lib/utils'
-import type { Invoice } from '@/types/database.types'
+import type { Invoice, InvoiceWithProject } from '@/types/database.types'
 import {
   Search,
   MoreHorizontal,
@@ -54,6 +57,9 @@ import {
   XCircle,
   Clock,
   Download,
+  FileCheck,
+  RefreshCw,
+  QrCode,
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 
@@ -79,6 +85,8 @@ export function InvoicesTable() {
   const [statusFilter, setStatusFilter] = useState<string>('all')
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [selectedInvoiceId, setSelectedInvoiceId] = useState<string | null>(null)
+  const [qrModalOpen, setQrModalOpen] = useState(false)
+  const [selectedInvoice, setSelectedInvoice] = useState<InvoiceWithProject | null>(null)
 
   const debouncedSearch = useDebouncedCallback((value: string) => {
     setSearch(value)
@@ -116,6 +124,33 @@ export function InvoicesTable() {
       toast.error(error.message)
     },
   })
+
+  const registerVerifactuMutation = useMutation({
+    mutationFn: registerInVerifactu,
+    onSuccess: () => {
+      toast.success('Factura registrada en Verifactu')
+      queryClient.invalidateQueries({ queryKey: ['invoices'] })
+    },
+    onError: (error: Error) => {
+      toast.error(error.message)
+    },
+  })
+
+  const retryVerifactuMutation = useMutation({
+    mutationFn: retryVerifactuRegistration,
+    onSuccess: () => {
+      toast.success('Factura registrada en Verifactu')
+      queryClient.invalidateQueries({ queryKey: ['invoices'] })
+    },
+    onError: (error: Error) => {
+      toast.error(error.message)
+    },
+  })
+
+  const handleOpenQRModal = (invoice: InvoiceWithProject) => {
+    setSelectedInvoice(invoice)
+    setQrModalOpen(true)
+  }
 
   const handleDelete = () => {
     if (selectedInvoiceId) {
@@ -184,6 +219,7 @@ export function InvoicesTable() {
                 <TableHead>Cliente</TableHead>
                 <TableHead>Proyecto</TableHead>
                 <TableHead>Estado</TableHead>
+                <TableHead>Verifactu</TableHead>
                 <TableHead>Total</TableHead>
                 <TableHead>Vencimiento</TableHead>
                 <TableHead className="w-[50px]"></TableHead>
@@ -222,6 +258,12 @@ export function InvoicesTable() {
                       >
                         {isOverdue ? 'Vencida' : STATUS_LABELS[invoice.status]}
                       </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <VerifactuStatusBadge
+                        status={invoice.verifactu_status || 'not_registered'}
+                        errorMessage={invoice.verifactu_error_message}
+                      />
                     </TableCell>
                     <TableCell>{formatCurrency(invoice.total)}</TableCell>
                     <TableCell>
@@ -288,6 +330,33 @@ export function InvoicesTable() {
                               Marcar como pagada
                             </DropdownMenuItem>
                           )}
+                          {/* Verifactu actions */}
+                          <DropdownMenuSeparator />
+                          {(invoice.status === 'sent' || invoice.status === 'paid') &&
+                            invoice.verifactu_status === 'not_registered' && (
+                            <DropdownMenuItem
+                              onClick={() => registerVerifactuMutation.mutate(invoice.invoice_id)}
+                              disabled={registerVerifactuMutation.isPending}
+                            >
+                              <FileCheck className="mr-2 h-4 w-4" />
+                              Registrar en Verifactu
+                            </DropdownMenuItem>
+                          )}
+                          {invoice.verifactu_status === 'error' && (
+                            <DropdownMenuItem
+                              onClick={() => retryVerifactuMutation.mutate(invoice.invoice_id)}
+                              disabled={retryVerifactuMutation.isPending}
+                            >
+                              <RefreshCw className="mr-2 h-4 w-4" />
+                              Reintentar Verifactu
+                            </DropdownMenuItem>
+                          )}
+                          {invoice.verifactu_status === 'registered' && (
+                            <DropdownMenuItem onClick={() => handleOpenQRModal(invoice)}>
+                              <QrCode className="mr-2 h-4 w-4" />
+                              Ver QR / CSV
+                            </DropdownMenuItem>
+                          )}
                           {invoice.status === 'draft' && (
                             <>
                               <DropdownMenuSeparator />
@@ -333,6 +402,21 @@ export function InvoicesTable() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Verifactu QR Modal */}
+      {selectedInvoice && (
+        <VerifactuQRModal
+          open={qrModalOpen}
+          onOpenChange={setQrModalOpen}
+          invoiceNumber={selectedInvoice.invoice_number}
+          verifactuId={selectedInvoice.verifactu_id}
+          verifactuQr={selectedInvoice.verifactu_qr}
+          verifactuCsv={selectedInvoice.verifactu_csv}
+          verifactuUrl={selectedInvoice.verifactu_url}
+          verifactuHash={selectedInvoice.verifactu_hash}
+          registeredAt={selectedInvoice.verifactu_registered_at}
+        />
+      )}
     </div>
   )
 }
