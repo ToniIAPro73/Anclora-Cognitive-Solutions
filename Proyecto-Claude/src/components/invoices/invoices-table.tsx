@@ -102,7 +102,13 @@ export function InvoicesTable() {
   })
 
   const deleteMutation = useMutation({
-    mutationFn: deleteInvoice,
+    mutationFn: async (invoiceId: string) => {
+      const result = await deleteInvoice(invoiceId)
+      if (!result.success) {
+        throw new Error(result.error || 'Error al eliminar factura')
+      }
+      return result
+    },
     onSuccess: () => {
       toast.success('Factura eliminada')
       queryClient.invalidateQueries({ queryKey: ['invoices'] })
@@ -126,7 +132,13 @@ export function InvoicesTable() {
   })
 
   const registerVerifactuMutation = useMutation({
-    mutationFn: registerInVerifactu,
+    mutationFn: async (invoiceId: string) => {
+      const result = await registerInVerifactu(invoiceId)
+      if (!result.success) {
+        throw new Error(result.error || 'Error al registrar en Verifactu')
+      }
+      return result
+    },
     onSuccess: () => {
       toast.success('Factura registrada en Verifactu')
       queryClient.invalidateQueries({ queryKey: ['invoices'] })
@@ -137,7 +149,13 @@ export function InvoicesTable() {
   })
 
   const retryVerifactuMutation = useMutation({
-    mutationFn: retryVerifactuRegistration,
+    mutationFn: async (invoiceId: string) => {
+      const result = await retryVerifactuRegistration(invoiceId)
+      if (!result.success) {
+        throw new Error(result.error || 'Error al reintentar registro')
+      }
+      return result
+    },
     onSuccess: () => {
       toast.success('Factura registrada en Verifactu')
       queryClient.invalidateQueries({ queryKey: ['invoices'] })

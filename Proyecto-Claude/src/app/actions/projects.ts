@@ -121,30 +121,42 @@ export async function getProjectsForKanban(): Promise<ActionResult<Record<Projec
 
 export async function createProject(formData: ProjectFormData): Promise<ActionResult<Project>> {
   try {
+    console.log('createProject - formData:', JSON.stringify(formData, null, 2))
+
     const validatedData = projectSchema.parse(formData)
+    console.log('createProject - validatedData:', JSON.stringify(validatedData, null, 2))
+
     const supabase = await createServerSupabaseClient()
+
+    const insertData = {
+      project_name: validatedData.project_name,
+      client_id: validatedData.client_id,
+      description: validatedData.description || null,
+      status: validatedData.status,
+      budget: validatedData.budget || null,
+      deadline: validatedData.deadline || null,
+      priority: validatedData.priority,
+    }
+    console.log('createProject - insertData:', JSON.stringify(insertData, null, 2))
 
     const { data, error } = await supabase
       .from('projects')
       // @ts-ignore - Supabase types issue with custom schema
-      .insert({
-        project_name: validatedData.project_name,
-        client_id: validatedData.client_id,
-        description: validatedData.description || null,
-        status: validatedData.status,
-        budget: validatedData.budget || null,
-        deadline: validatedData.deadline || null,
-        priority: validatedData.priority,
-      })
+      .insert(insertData)
       .select()
       .single()
 
-    if (error) throw error
+    if (error) {
+      console.error('createProject - Supabase error:', error)
+      throw error
+    }
 
+    console.log('createProject - success:', data)
     revalidatePath('/dashboard/projects')
     revalidatePath('/dashboard/kanban')
     return { success: true, data }
   } catch (error) {
+    console.error('createProject - catch error:', error)
     if (error instanceof ZodError) {
       const firstError = error.errors[0]
       return {

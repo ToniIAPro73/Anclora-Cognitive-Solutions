@@ -197,27 +197,47 @@ export function QuoteWizard({ clients, projects }: QuoteWizardProps) {
 
   const isLoading = generateMutation.isPending || saveMutation.isPending
 
+  const STEPS = [
+    { number: 1, label: 'Proyecto', description: 'Selección de servicios' },
+    { number: 2, label: 'Configuración', description: 'Ajustes de la IA' },
+    { number: 3, label: 'Revisión', description: 'Confirmar y guardar' },
+  ]
+
   return (
     <div className="max-w-3xl">
       {/* Progress indicator */}
-      <div className="mb-8 flex items-center justify-between">
-        {[1, 2, 3].map((s) => (
-          <div key={s} className="flex items-center">
-            <div
-              className={`flex h-10 w-10 items-center justify-center rounded-full border-2 text-sm font-medium ${
-                step >= s
-                  ? 'border-primary bg-primary text-primary-foreground'
-                  : 'border-muted-foreground text-muted-foreground'
-              }`}
-            >
-              {step > s ? <Check className="h-5 w-5" /> : s}
-            </div>
-            {s < 3 && (
+      <div className="mb-10 flex items-start justify-between">
+        {STEPS.map((s, index) => (
+          <div key={s.number} className="flex items-start flex-1">
+            <div className="flex flex-col items-center">
               <div
-                className={`h-1 w-20 mx-2 ${
-                  step > s ? 'bg-primary' : 'bg-muted'
+                className={`flex h-10 w-10 items-center justify-center rounded-full border-2 text-sm font-medium transition-all ${
+                  step >= s.number
+                    ? 'border-primary bg-primary text-primary-foreground'
+                    : 'border-muted-foreground/40 text-muted-foreground'
                 }`}
-              />
+              >
+                {step > s.number ? <Check className="h-5 w-5" /> : s.number}
+              </div>
+              <div className="mt-3 text-center">
+                <p className={`text-sm font-medium ${
+                  step >= s.number ? 'text-foreground' : 'text-muted-foreground'
+                }`}>
+                  {s.label}
+                </p>
+                <p className="text-xs text-muted-foreground mt-0.5 hidden sm:block">
+                  {s.description}
+                </p>
+              </div>
+            </div>
+            {index < STEPS.length - 1 && (
+              <div className="flex-1 flex items-center px-4 pt-5">
+                <div
+                  className={`h-0.5 w-full transition-colors ${
+                    step > s.number ? 'bg-primary' : 'bg-muted'
+                  }`}
+                />
+              </div>
             )}
           </div>
         ))}

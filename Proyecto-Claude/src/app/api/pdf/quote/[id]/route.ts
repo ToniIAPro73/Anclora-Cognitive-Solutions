@@ -6,15 +6,16 @@ import type { QuoteWithProject } from '@/types/database.types'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const supabase = await createServerSupabaseClient()
 
     const { data: quote, error } = await supabase
       .from('quotes')
       .select('*, projects(*, clients(*))')
-      .eq('quote_id', params.id)
+      .eq('quote_id', id)
       .single<QuoteWithProject>()
 
     if (error || !quote) {

@@ -8,6 +8,7 @@
  * the simulated functions when connecting to the actual Verifactu API.
  */
 
+import QRCode from 'qrcode'
 import type {
   Invoice,
   InvoiceWithProject,
@@ -95,56 +96,28 @@ export function generateVerifactuCSV(
  * Generates a QR code as a base64 data URL
  * The QR contains the verification URL for the invoice
  */
-export function generateVerifactuQR(verificationUrl: string): string {
-  // Simplified QR simulation - in production use a proper QR library like 'qrcode'
-  // This returns a placeholder base64 SVG that represents a QR code
-  const qrSvg = `
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+export async function generateVerifactuQR(verificationUrl: string): Promise<string> {
+  try {
+    const qrDataUrl = await QRCode.toDataURL(verificationUrl, {
+      errorCorrectionLevel: 'M',
+      type: 'image/png',
+      width: 200,
+      margin: 2,
+      color: {
+        dark: '#000000',
+        light: '#FFFFFF',
+      },
+    })
+    return qrDataUrl
+  } catch (error) {
+    console.error('Error generating QR code:', error)
+    // Return a fallback placeholder if QR generation fails
+    const fallbackSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
       <rect width="200" height="200" fill="white"/>
-      <g fill="black">
-        <!-- Simplified QR pattern -->
-        <rect x="10" y="10" width="50" height="50"/>
-        <rect x="140" y="10" width="50" height="50"/>
-        <rect x="10" y="140" width="50" height="50"/>
-        <rect x="20" y="20" width="30" height="30" fill="white"/>
-        <rect x="150" y="20" width="30" height="30" fill="white"/>
-        <rect x="20" y="150" width="30" height="30" fill="white"/>
-        <rect x="30" y="30" width="10" height="10"/>
-        <rect x="160" y="30" width="10" height="10"/>
-        <rect x="30" y="160" width="10" height="10"/>
-        <!-- Data pattern (simplified) -->
-        ${generateQRDataPattern(verificationUrl)}
-      </g>
-      <text x="100" y="195" text-anchor="middle" font-size="8" fill="#666">
-        Verifactu
-      </text>
-    </svg>
-  `.trim()
-
-  // Convert SVG to base64
-  const base64 = Buffer.from(qrSvg).toString('base64')
-  return `data:image/svg+xml;base64,${base64}`
-}
-
-/**
- * Generates a pseudo-random QR data pattern based on URL hash
- */
-function generateQRDataPattern(url: string): string {
-  const rects: string[] = []
-  const urlHash = url.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
-
-  for (let row = 0; row < 10; row++) {
-    for (let col = 0; col < 10; col++) {
-      const shouldFill = ((urlHash + row * 10 + col) % 3) === 0
-      if (shouldFill) {
-        const x = 70 + col * 6
-        const y = 70 + row * 6
-        rects.push(`<rect x="${x}" y="${y}" width="5" height="5"/>`)
-      }
-    }
+      <text x="100" y="100" text-anchor="middle" font-size="12" fill="#666">Error QR</text>
+    </svg>`
+    return `data:image/svg+xml;base64,${Buffer.from(fallbackSvg).toString('base64')}`
   }
-
-  return rects.join('\n')
 }
 
 /**
@@ -234,7 +207,7 @@ export async function generateVerifactuData(
   const url = generateVerifactuUrl(csv, config.entorno)
 
   // Generate QR code
-  const qr = generateVerifactuQR(url)
+  const qr = await generateVerifactuQR(url)
 
   // Generate Verifactu ID
   const verifactuId = generateVerifactuId(invoice, config)

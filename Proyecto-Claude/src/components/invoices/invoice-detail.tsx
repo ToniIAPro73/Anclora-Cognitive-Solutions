@@ -128,7 +128,13 @@ export function InvoiceDetail({ invoice }: InvoiceDetailProps) {
   }
 
   const registerVerifactuMutation = useMutation({
-    mutationFn: () => registerInVerifactu(invoice.invoice_id),
+    mutationFn: async () => {
+      const result = await registerInVerifactu(invoice.invoice_id)
+      if (!result.success) {
+        throw new Error(result.error || 'Error al registrar en Verifactu')
+      }
+      return result
+    },
     onSuccess: () => {
       toast.success('Factura registrada en Verifactu')
       queryClient.invalidateQueries({ queryKey: ['invoices'] })
@@ -139,7 +145,13 @@ export function InvoiceDetail({ invoice }: InvoiceDetailProps) {
   })
 
   const retryVerifactuMutation = useMutation({
-    mutationFn: () => retryVerifactuRegistration(invoice.invoice_id),
+    mutationFn: async () => {
+      const result = await retryVerifactuRegistration(invoice.invoice_id)
+      if (!result.success) {
+        throw new Error(result.error || 'Error al reintentar registro')
+      }
+      return result
+    },
     onSuccess: () => {
       toast.success('Factura registrada en Verifactu')
       queryClient.invalidateQueries({ queryKey: ['invoices'] })
@@ -194,7 +206,6 @@ export function InvoiceDetail({ invoice }: InvoiceDetailProps) {
           )}
 
           <Button
-            variant="outline"
             onClick={handleDownloadPDF}
             disabled={isGeneratingPDF}
           >
@@ -206,45 +217,47 @@ export function InvoiceDetail({ invoice }: InvoiceDetailProps) {
             {isGeneratingPDF ? 'Generando...' : 'Descargar PDF'}
           </Button>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="icon">
-                <MoreVertical className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {invoice.status === 'draft' && (
-                <DropdownMenuItem
-                  onClick={() => updateStatusMutation.mutate('sent')}
-                >
-                  <Send className="mr-2 h-4 w-4" />
-                  Marcar como enviada
-                </DropdownMenuItem>
-              )}
-              {client?.email && invoice.status === 'sent' && (
-                <DropdownMenuItem onClick={() => openEmailModal('invoice')}>
-                  <Mail className="mr-2 h-4 w-4" />
-                  Reenviar por email
-                </DropdownMenuItem>
-              )}
-              {invoice.status === 'sent' && (
-                <DropdownMenuItem
-                  onClick={() => updateStatusMutation.mutate('paid')}
-                >
-                  <CheckCircle className="mr-2 h-4 w-4" />
-                  Marcar como pagada
-                </DropdownMenuItem>
-              )}
-              {(invoice.status === 'draft' || invoice.status === 'sent') && (
-                <DropdownMenuItem
-                  onClick={() => updateStatusMutation.mutate('cancelled')}
-                >
-                  <XCircle className="mr-2 h-4 w-4" />
-                  Cancelar factura
-                </DropdownMenuItem>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {(invoice.status === 'draft' || invoice.status === 'sent') && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="icon">
+                  <MoreVertical className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {invoice.status === 'draft' && (
+                  <DropdownMenuItem
+                    onClick={() => updateStatusMutation.mutate('sent')}
+                  >
+                    <Send className="mr-2 h-4 w-4" />
+                    Marcar como enviada
+                  </DropdownMenuItem>
+                )}
+                {client?.email && invoice.status === 'sent' && (
+                  <DropdownMenuItem onClick={() => openEmailModal('invoice')}>
+                    <Mail className="mr-2 h-4 w-4" />
+                    Reenviar por email
+                  </DropdownMenuItem>
+                )}
+                {invoice.status === 'sent' && (
+                  <DropdownMenuItem
+                    onClick={() => updateStatusMutation.mutate('paid')}
+                  >
+                    <CheckCircle className="mr-2 h-4 w-4" />
+                    Marcar como pagada
+                  </DropdownMenuItem>
+                )}
+                {(invoice.status === 'draft' || invoice.status === 'sent') && (
+                  <DropdownMenuItem
+                    onClick={() => updateStatusMutation.mutate('cancelled')}
+                  >
+                    <XCircle className="mr-2 h-4 w-4" />
+                    Cancelar factura
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
         </div>
       </div>
 

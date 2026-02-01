@@ -66,8 +66,14 @@ export function ProjectForm({ project, clients: initialClients, isEditing }: Pro
   const selectedClientId = watch('client_id')
 
   const createMutation = useMutation({
-    mutationFn: createProject,
+    mutationFn: async (data: ProjectFormData) => {
+      console.log('createMutation - sending data:', data)
+      const result = await createProject(data)
+      console.log('createMutation - result:', result)
+      return result
+    },
     onSuccess: (result) => {
+      console.log('createMutation - onSuccess:', result)
       if (result.success) {
         toast.success('Proyecto creado correctamente')
         router.push('/dashboard/projects')
@@ -75,7 +81,8 @@ export function ProjectForm({ project, clients: initialClients, isEditing }: Pro
         toast.error(result.error || 'Error al crear proyecto')
       }
     },
-    onError: () => {
+    onError: (error) => {
+      console.error('createMutation - onError:', error)
       toast.error('Error al crear proyecto')
     },
   })
@@ -96,6 +103,8 @@ export function ProjectForm({ project, clients: initialClients, isEditing }: Pro
   })
 
   const onSubmit = (data: ProjectFormData) => {
+    console.log('onSubmit - data:', data)
+    console.log('onSubmit - isEditing:', isEditing)
     if (isEditing) {
       updateMutation.mutate(data)
     } else {
