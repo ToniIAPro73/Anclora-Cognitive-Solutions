@@ -106,10 +106,12 @@ export function ProjectForm({ project, clients: initialClients, isEditing }: Pro
   const isLoading = createMutation.isPending || updateMutation.isPending
 
   const handleClientCreated = (newClient: Client) => {
-    // Add the new client to the local list
+    // Add the new client to the local list and auto-select it
     setClients((prev) => [...prev, { client_id: newClient.client_id, company_name: newClient.company_name }])
-    // Auto-select the new client
-    setValue('client_id', newClient.client_id, { shouldValidate: true, shouldDirty: true })
+    // Use setTimeout to ensure the state has updated before selecting
+    setTimeout(() => {
+      setValue('client_id', newClient.client_id, { shouldValidate: true, shouldDirty: true })
+    }, 0)
   }
 
   return (
