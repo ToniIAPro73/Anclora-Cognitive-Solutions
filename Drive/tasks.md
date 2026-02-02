@@ -3034,7 +3034,7 @@ Configurar ejecución automática de tests en pipeline CI/CD.
 **Estimación:** 3 horas
 **Prioridad:** P1
 **Asignación:** QA
-**Estado:** ⏳ TODO
+**Estado:** ✅ DONE
 **Tags:** \#testing \#ci \#automation
 
 ---

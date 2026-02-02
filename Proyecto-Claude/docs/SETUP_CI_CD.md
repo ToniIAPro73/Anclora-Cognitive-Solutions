@@ -53,6 +53,21 @@ WHERE email = 'admin@anclora.app';
 
 ---
 
+## Secrets de Cobertura (Codecov)
+
+| Secret Name | Descripción | Dónde encontrarlo |
+|-------------|-------------|-------------------|
+| `CODECOV_TOKEN` | Token de autenticación Codecov | codecov.io → Settings → Repository Upload Token |
+
+### Configurar Codecov:
+
+1. Ve a [codecov.io](https://codecov.io) e inicia sesión con GitHub
+2. Selecciona tu repositorio
+3. Copia el **Repository Upload Token**
+4. Añádelo como secret `CODECOV_TOKEN` en GitHub
+
+---
+
 ## Secrets Opcionales
 
 | Secret Name | Descripción | Necesario para |
@@ -72,19 +87,28 @@ Después de configurar los secrets, puedes verificar que todo funciona:
 ### Estructura del Pipeline:
 
 ```
-┌─────────────────────────┐
-│   lint-and-type-check   │
-└───────────┬─────────────┘
-            │
-            ▼
-┌─────────────────────────┐
-│         build           │
-└───────────┬─────────────┘
-            │
-            ▼
-┌─────────────────────────┐
-│       e2e-tests         │
-└─────────────────────────┘
+┌─────────────────────────┐     ┌─────────────────────────┐
+│   lint-and-type-check   │     │      unit-tests         │
+└───────────┬─────────────┘     │   + Codecov upload      │
+            │                   └───────────┬─────────────┘
+            │                               │
+            └───────────────┬───────────────┘
+                            │
+                            ▼
+            ┌─────────────────────────┐
+            │         build           │
+            └───────────┬─────────────┘
+                        │
+                        ▼
+            ┌─────────────────────────┐
+            │       e2e-tests         │
+            └───────────┬─────────────┘
+                        │
+                        ▼
+            ┌─────────────────────────┐
+            │       ci-success        │
+            │  (branch protection)    │
+            └─────────────────────────┘
 ```
 
 ---
