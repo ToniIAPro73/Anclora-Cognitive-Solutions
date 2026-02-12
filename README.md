@@ -1,4 +1,4 @@
-# Anclora Cognitive Solutions Platform
+# Anclora Atlas
 
 [![CI](https://github.com/anclora/platform/actions/workflows/ci.yml/badge.svg)](https://github.com/anclora/platform/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/anclora/platform/branch/main/graph/badge.svg)](https://codecov.io/gh/anclora/platform)
@@ -151,4 +151,4 @@ Ver [docs/SETUP_CI_CD.md](./docs/SETUP_CI_CD.md) para configuración de secrets.
 
 ## Licencia
 
-Propietario - Anclora Cognitive Solutions S.L.
+Propietario - Anclora
